@@ -1,0 +1,3771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FamCoopy - Family Membership & Trust Cooperative Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #7C3AED;
+            --primary-dark: #5B21B6;
+            --secondary: #10B981;
+            --accent: #F59E0B;
+            --error: #EF4444;
+            --success: #22C55E;
+            --neutral: #6B7280;
+            --bg-light: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-dark: #1F2937;
+            --red-accent: #DC2626;
+            --green-accent: #059669;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Landing Page Styles */
+        .landing-page {
+            min-height: 100vh;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--red-accent) 50%, var(--green-accent) 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .features {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 22px;
+        }
+
+        .footer {
+            background: #1F2937;
+            color: white;
+            padding: 40px 20px 20px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .footer-address {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 15px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            color: var(--primary);
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .btn-secondary {
+            background: var(--neutral);
+            color: white;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #4B5563;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            transition: transform 0.3s ease;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            left: 0;
+            top: 0;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-260px);
+        }
+
+        .sidebar-header {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px; /* Increased from 14px - not too tiny */
+            margin-bottom: 3px;
+        }
+
+        .sidebar-header p {
+            opacity: 0.8;
+            font-size: 12px; /* Increased from 10px */
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-nav button {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .sidebar-nav button:hover, .sidebar-nav button.active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 270px; /* Increased from 260px to prevent overlap */
+            padding: 25px; /* Increased padding */
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        .toggle-sidebar {
+            position: fixed;
+            top: 15px; /* Raised to logo level - was 70px */
+            left: 20px;
+            z-index: 150;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: left 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .toggle-sidebar:hover {
+            background: var(--primary-dark);
+        }
+
+        .section {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section h2 {
+            color: var(--primary);
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+
+        /* Home Pages */
+        .home-content {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .logo-upload {
+            margin: 15px auto; /* Reduced from 30px */
+            width: 120px; /* Reduced from 200px */
+            height: 120px; /* Reduced from 200px */
+            border: 2px dashed var(--primary); /* Reduced from 3px */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .logo-upload:hover {
+            border-color: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .logo-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .logo-upload span {
+            color: var(--primary);
+            font-size: 12px; /* Reduced from 16px */
+        }
+
+        .home-name {
+            font-size: 24px; /* Reduced from 36px */
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0; /* Reduced from 20px */
+        }
+
+        .home-year {
+            font-size: 28px; /* Reduced from 48px */
+            font-weight: 700;
+            color: var(--accent);
+            margin: 10px 0; /* Reduced from 20px */
+        }
+
+        .generation-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
+            gap: 15px; /* Reduced gap */
+            margin-top: 15px; /* Reduced margin */
+            max-width: 500px; /* Limit width */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 15px 20px; /* Much smaller padding */
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px; /* Reduced from 40px */
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px; /* Reduced from 16px */
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+
+        /* Settings Tabs */
+        .settings-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #E5E7EB;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--neutral);
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .sub-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .sub-tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--neutral);
+        }
+
+        .sub-tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .sub-tab-content {
+            display: none;
+        }
+
+        .sub-tab-content.active {
+            display: block;
+        }
+
+        /* Genealogy Levels */
+        .genealogy-level {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #F9FAFB;
+            border-radius: 8px;
+        }
+
+        .genealogy-level h4 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        /* Contribution List */
+        .contribution-item {
+            background: #F9FAFB;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .contribution-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .contribution-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .btn-archive {
+            background: var(--error);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .contribution-detail {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .detail-item {
+            font-size: 14px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--neutral);
+        }
+
+        /* Compound Interest Calculator */
+        .calculator {
+            background: #F9FAFB;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .calculator h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 2px solid var(--primary);
+        }
+
+        .result-box h5 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        /* Permissions Grid */
+        .permissions-grid {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .permission-item {
+            background: #F9FAFB;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: start;
+            gap: 12px;
+        }
+
+        .permission-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .permission-info h5 {
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+
+        .permission-info p {
+            font-size: 14px;
+            color: var(--neutral);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .sidebar {
+                transform: translateX(-260px);
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .toggle-sidebar {
+                left: 20px;
+            }
+
+            .settings-tabs {
+                overflow-x: auto;
+            }
+
+            .home-year {
+                font-size: 36px;
+            }
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #D1FAE5;
+            color: #065F46;
+            border-left: 4px solid var(--success);
+        }
+
+        .alert-error {
+            background: #FEE2E2;
+            color: #991B1B;
+            border-left: 4px solid var(--error);
+        }
+
+        /* Hidden utility */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landingPage" class="landing-page">
+        <div class="hero">
+            <h1 id="landingPageTitle">Welcome to FamCoopy</h1>
+            <p id="landingPageSubtitle">Family Membership & Trust Cooperative Management System</p>
+            
+            <div style="margin-top: 40px; text-align: center;">
+                <!-- First Time Setup Button (for new installations) -->
+                <div id="setupButtonContainer" style="margin-bottom: 30px;">
+                    <button onclick="showSetupModal()" 
+                            style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #1F2937; font-size: 22px; font-weight: 800;
+                                   padding: 20px 50px; border: none; border-radius: 12px; cursor: pointer;
+                                   box-shadow: 0 8px 20px rgba(255,215,0,0.4); margin-bottom: 15px;
+                                   animation: pulse 2s infinite;">
+                        ⚡ FIRST TIME? START SETUP HERE ⚡
+                    </button>
+                    <p style="color: white; font-size: 14px; margin-top: 10px; opacity: 0.9;">
+                        👆 New installation? Click above to create Super Admin account
+                    </p>
+                    <style>
+                        @keyframes pulse {
+                            0%, 100% { transform: scale(1); }
+                            50% { transform: scale(1.05); }
+                        }
+                    </style>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <!-- Already have an account header -->
+                    <p style="color: white; text-align: center; margin-bottom: 10px;">
+                        <span style="font-size: 11px; font-weight: 400;">Already have an account?</span> 
+                        <span style="font-size: 16px; font-weight: 600; color: #FCD34D;">Login As</span>
+                    </p>
+                    
+                    <!-- Cooperative Login Dropdown -->
+                    <select id="loginTypeSelect" onchange="handleLoginSelection()" 
+                            style="padding: 16px 30px; border: 3px solid white; border-radius: 12px; font-size: 16px; font-weight: 700; 
+                                   cursor: pointer; background: linear-gradient(135deg, #7C3AED 0%, #F59E0B 50%, #10B981 100%);
+                                   color: white; min-width: 300px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+                                   text-align: center; display: block; margin: 0 auto 8px auto;">
+                        <option value="" style="background: white; color: #1F2937;">-- Select Cooperative Role --</option>
+                        <option value="super_admin" style="background: #7C3AED; color: white;">🔑 Super Admin</option>
+                        <option value="admin" style="background: #10B981; color: white;">👔 Administrator</option>
+                        <option value="coop_member" style="background: #F59E0B; color: white;">💼 Cooperative Member</option>
+                    </select>
+                    
+                    <!-- Note under cooperative dropdown -->
+                    <small style="color: white; font-size: 11px; display: block; margin: 0 auto 15px auto; opacity: 0.95; text-align: center; max-width: 350px; line-height: 1.4;">
+                        💡 Cooperative Members automatically have access to the "Family Only Member"
+                    </small>
+                    
+                    <!-- Separate Family Member Button -->
+                    <button onclick="selectLoginRole('family_member')" 
+                            style="padding: 14px 40px; border: 3px solid white; border-radius: 12px; font-size: 16px; font-weight: 700; 
+                                   cursor: pointer; background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+                                   color: white; min-width: 300px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+                                   display: block; margin: 0 auto; transition: all 0.3s;">
+                        👥 Family Only Member
+                    </button>
+                    <small style="color: white; font-size: 11px; display: block; margin-top: 8px; opacity: 0.9; text-align: center;">
+                        For Non-Cooperative Family Only Members
+                    </small>
+                </div>
+                
+                <button class="btn btn-primary" onclick="showPublicRegistration()" 
+                        style="background: var(--green-accent); color: white; font-size: 18px; padding: 16px 40px; margin-top: 20px;">
+                    Join Our Family
+                </button>
+                <p style="color: white; font-size: 11px; margin-top: 8px; opacity: 0.9; text-align: center; line-height: 1.4;">
+                    (Registration required for All Family Members to build The Family Tree - Requires Admin Approval)
+                </p>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2 style="text-align: center; color: var(--primary); font-size: 32px;">Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🌳 Family Tree</h3>
+                    <p>Manage multi-generational family tree with living/deceased status tracking across 15 generations</p>
+                </div>
+                <div class="feature-card">
+                    <h3>💰 Financial Cooperative</h3>
+                    <p>Operate formal financial cooperative with savings, loans, and investment contributions</p>
+                </div>
+                <div class="feature-card">
+                    <h3>👥 Family Contributions</h3>
+                    <p>Enable family-wide fundraising campaigns for education, medical, events, and infrastructure</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🔐 Role-Based Access</h3>
+                    <p>Comprehensive role and permission system across family and cooperative tracks</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📱 SMS Authentication</h3>
+                    <p>Secure SMS-based authentication with no email dependency</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🆓 Completely Free</h3>
+                    <p>Zero subscription fees - 100% free for all family members</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-content">
+                <p style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px;">
+                    <!-- Tiny Logo Inline -->
+                    <svg width="20" height="20" viewBox="0 0 50 50" style="display: inline-block; vertical-align: middle;">
+                        <circle cx="25" cy="25" r="24" fill="url(#grad2)" stroke="#059669" stroke-width="2"/>
+                        <defs>
+                            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M 25 38 L 25 28" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M 25 28 L 18 20" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M 25 28 L 32 20" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M 25 28 L 25 18" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="25" cy="15" r="3.5" fill="#ffffff" stroke="#059669" stroke-width="1.5"/>
+                        <circle cx="18" cy="20" r="3" fill="#ffffff" stroke="#059669" stroke-width="1.5"/>
+                        <circle cx="32" cy="20" r="3" fill="#ffffff" stroke="#059669" stroke-width="1.5"/>
+                        <circle cx="25" cy="38" r="3.5" fill="#ffffff" stroke="#059669" stroke-width="1.5"/>
+                        <text x="25" y="40" font-family="Arial, sans-serif" font-size="3" font-weight="bold" fill="#10B981" text-anchor="middle">C</text>
+                    </svg>
+                    <strong>FamCoopy</strong>
+                </p>
+                
+                <p style="margin-bottom: 8px;">Bringing Families Together Through Technology</p>
+                <p>© 2026 FamCoopy. All rights reserved.</p>
+                <p class="footer-address">
+                    Developed by Chief McEferson Lawrence Efere<br>
+                    Levterk Enterprise<br>
+                    Alfa Clinic Close, off Imiringi Road, Edepie, Yenagoa, Bayelsa State, Nigeria
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Super Admin Registration Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <h2>Super Admin Registration</h2>
+            <p style="margin-bottom: 20px; color: var(--neutral);">Create your Super Admin account to get started</p>
+            
+            <form id="registerForm" onsubmit="registerSuperAdmin(event)">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="regName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Mobile Phone *</label>
+                    <input type="tel" id="regPhone" placeholder="+234..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Password *</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="regPassword" required>
+                        <span class="password-toggle" onclick="togglePassword('regPassword', this)">👁️</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Confirm Password *</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="regConfirmPassword" required>
+                        <span class="password-toggle" onclick="togglePassword('regConfirmPassword', this)">👁️</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Create Super Admin Account</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('registerModal')">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>Login to FamCoopy</h2>
+            
+            <form id="loginForm" onsubmit="loginUser(event)">
+                <div class="form-group">
+                    <label>Mobile Phone *</label>
+                    <input type="tel" id="loginPhone" placeholder="+234..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Password *</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPassword" required>
+                        <span class="password-toggle" onclick="togglePassword('loginPassword', this)">👁️</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Login as Super Admin</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('loginModal')">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Public Member Registration Modal -->
+    <div id="publicRegistrationModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <h2>Member Registration</h2>
+            <p style="margin-bottom: 20px; color: var(--neutral);">Join your family network. Your registration will be reviewed by an administrator.</p>
+            
+            <form id="publicRegForm" onsubmit="submitPublicRegistration(event)">
+                <div style="position: relative;">
+                    <!-- Small Photo in Top Right Corner -->
+                    <div style="position: absolute; top: 0; right: 0; z-index: 10;">
+                        <div class="form-group">
+                            <label style="font-size: 10px; color: var(--neutral);">Photo (Optional)</label>
+                            <div class="photo-preview" id="photoPreview" onclick="document.getElementById('pubPhoto').click()" 
+                                 ondblclick="zoomPhoto()"
+                                 style="width: 70px; height: 90px; border: 2px dashed var(--primary); border-radius: 6px; 
+                                        display: flex; align-items: center; justify-content: center; cursor: pointer; 
+                                        overflow: hidden; background: #F9FAFB;">
+                                <span style="color: var(--neutral); font-size: 9px; text-align: center; padding: 3px; line-height: 1.2;">
+                                    Tap<br>upload
+                                </span>
+                            </div>
+                            <input type="file" id="pubPhoto" accept="image/*" style="display: none;" onchange="previewPhoto(event)">
+                            <small style="font-size: 8px; color: var(--neutral); display: block; margin-top: 2px; text-align: center; line-height: 1.1;">
+                                Optional<br>Gen 6-20
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Form Fields -->
+                    <div style="padding-right: 85px;">
+                        <div class="form-group">
+                            <label>Full Names *</label>
+                            <input type="text" id="pubFullName" required minlength="3">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Mobile Phone *</label>
+                            <input type="tel" id="pubPhone" placeholder="+234..." required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Password *</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="pubPassword" required minlength="8">
+                                <span class="password-toggle" onclick="togglePassword('pubPassword', this)">👁️</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label>Sex *</label>
+                        <select id="pubSex" required>
+                            <option value="">Select</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Date of Birth *</label>
+                        <input type="text" id="pubDOB" placeholder="DD-MM-YYYY (e.g., 15-05-1990)" required>
+                        <small style="font-size: 11px; color: var(--neutral); display: block; margin-top: 3px;">
+                            Use DD-MM-YYYY format, or year only for ancestors (e.g., 1850)
+                        </small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Place of Birth</label>
+                    <input type="text" id="pubPOB" placeholder="City/Town">
+                </div>
+
+                <div class="form-group">
+                    <label>Marital Status *</label>
+                    <select id="pubMarital" required>
+                        <option value="">Select</option>
+                        <option value="Married">Married</option>
+                        <option value="Single">Single</option>
+                        <option value="Separated">Separated</option>
+                        <option value="Divorced">Divorced</option>
+                        <option value="Widowed">Widowed</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Related Parent/Spouse Name *</label>
+                    <small style="display: block; color: var(--neutral); font-size: 12px; margin-bottom: 5px;">
+                        Search and Select from Genealogical Ancestry
+                    </small>
+                    <select id="pubRelatedPerson" required>
+                        <option value="">-- Select --</option>
+                        <option value="PENDING">⏳ Pending (Cannot identify lineage yet)</option>
+                        <!-- Will be populated dynamically -->
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label>Relationship Type *</label>
+                        <select id="pubRelationType" required onchange="updateLineageOptions()">
+                            <option value="">-- Select --</option>
+                            <optgroup label="👶 Child of (Parent-Child)">
+                                <option value="Child of Parent">Child of Parent</option>
+                            </optgroup>
+                            <optgroup label="💑 Spouse/Partner">
+                                <option value="Spouse">Spouse</option>
+                                <option value="Partner">Partner</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="lineageTypeGroup" style="display: none;">
+                        <label>Lineage Type *</label>
+                        <select id="pubLineageType">
+                            <option value="">-- Select --</option>
+                            <option value="Biological">🧬 Biological</option>
+                            <option value="Adoptive">❤️ Adoptive</option>
+                            <option value="Step">👨‍👩‍👧 Step-Parent</option>
+                            <option value="Foster">🏠 Foster</option>
+                            <option value="Inherited">👑 Inherited</option>
+                        </select>
+                        <small style="font-size: 11px; color: var(--neutral); display: block; margin-top: 3px;">
+                            All family structures are valued equally
+                        </small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Children Names (optional)</label>
+                    <textarea id="pubChildren" rows="2" placeholder="Separate names with commas. These will be automatically added to the family tree."></textarea>
+                    <small style="color: var(--neutral); font-size: 12px;">
+                        💡 Any children you list will be automatically saved under your name in the genealogy
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label>City of Residence</label>
+                    <input type="text" id="pubCity">
+                </div>
+                
+                <div class="form-group">
+                    <label>State of Residence</label>
+                    <input type="text" id="pubState">
+                </div>
+                
+                <div class="form-group">
+                    <label>Country of Residence</label>
+                    <select id="pubCountry">
+                        <option value="">-- Select --</option>
+                        <option value="Nigeria">Nigeria</option>
+                        <option value="Ghana">Ghana</option>
+                        <option value="Kenya">Kenya</option>
+                        <option value="South Africa">South Africa</option>
+                        <option value="USA">USA</option>
+                        <option value="UK">UK</option>
+                        <option value="Canada">Canada</option>
+                        <!-- Add more countries as needed -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="pubJoinCoop" style="width: auto;">
+                        <span>Join Cooperative (Access to savings, loans, and investments)</span>
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Submit Registration</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('publicRegistrationModal')">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <button class="toggle-sidebar" id="toggleSidebar" onclick="toggleSidebar()">☰</button>
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <!-- FamCoopy Logo - Sharp & Professional -->
+                <svg width="45" height="45" viewBox="0 0 50 50" style="margin: 0 auto 8px; display: block;">
+                    <!-- Outer circle badge -->
+                    <circle cx="25" cy="25" r="24" fill="url(#grad1)" stroke="#059669" stroke-width="2"/>
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Central family tree structure -->
+                    <path d="M 25 38 L 25 28" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M 25 28 L 18 20" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M 25 28 L 32 20" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M 25 28 L 25 18" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                    
+                    <!-- People nodes (3 generations) -->
+                    <!-- Top generation -->
+                    <circle cx="25" cy="15" r="3.5" fill="#ffffff" stroke="#059669" stroke-width="1.5"/>
+                    <!-- Middle generation -->
+                    <circle cx="18" cy="20" r="3" fill="#ffffff" stroke="#059669" stroke-width="1.5"/>
+                    <circle cx="32" cy="20" r="3" fill="#ffffff" stroke="#059669" stroke-width="1.5"/>
+                    <!-- Bottom generation -->
+                    <circle cx="25" cy="38" r="3.5" fill="#ffffff" stroke="#059669" stroke-width="1.5"/>
+                    
+                    <!-- Cooperative symbol (C) -->
+                    <text x="25" y="40" font-family="Arial, sans-serif" font-size="3" font-weight="bold" fill="#10B981" text-anchor="middle">C</text>
+                </svg>
+                <h2 style="margin: 0;">FamCoopy</h2>
+                <p id="userNameDisplay" style="margin: 4px 0 0 0;">Super Admin</p>
+            </div>
+            <nav>
+                <ul class="sidebar-nav">
+                    <li><button onclick="showSection('cooperativeHome')" class="active">Cooperative Home</button></li>
+                    <li><button onclick="showSection('familyHome')">Family Home</button></li>
+                    <li><button onclick="showSection('settings')">Settings</button></li>
+                    <li><button onclick="showSection('members')">Members</button></li>
+                    <li><button onclick="showSection('worksheets')">📊 Worksheets</button></li>
+                    <li><button onclick="showSection('familyTree')">Family Tree</button></li>
+                    <li><button onclick="showSection('finance')">Finance</button></li>
+                    <li><button onclick="showSection('reports')">Reports</button></li>
+                    <li><button onclick="logout()" style="background: var(--error); margin-top: 20px;">Logout</button></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content" id="mainContent">
+            <!-- Cooperative Home -->
+            <section id="cooperativeHome" class="section active">
+                <div class="home-content">
+                    <div class="logo-upload" onclick="uploadLogo('coop')">
+                        <img id="coopLogoImg" style="display: none;">
+                        <span id="coopLogoText">Click to Upload Logo</span>
+                    </div>
+                    <input type="file" id="coopLogoInput" accept="image/*" style="display: none;" onchange="handleLogoUpload(event, 'coop')">
+                    
+                    <h1 class="home-name" id="coopName">Cooperative Name</h1>
+                    <div class="home-year" id="coopYear">2025</div>
+                    
+                    <!-- Dashboard Stats for Cooperative -->
+                    <div class="generation-stats" style="margin-top: 30px;">
+                        <div class="stat-card" style="background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);">
+                            <div class="stat-number" id="coopTotalMembers">0</div>
+                            <div class="stat-label">Total Members</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
+                            <div class="stat-number" id="coopMembers">0</div>
+                            <div class="stat-label">Cooperative Members</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
+                            <div class="stat-number" id="totalSavings">₦0</div>
+                            <div class="stat-label">Total Savings</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);">
+                            <div class="stat-number" id="activeLoans">0</div>
+                            <div class="stat-label">Active Loans</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Family Home -->
+            <section id="familyHome" class="section">
+                <div class="home-content">
+                    <div class="logo-upload" onclick="uploadLogo('family')">
+                        <img id="familyLogoImg" style="display: none;">
+                        <span id="familyLogoText">Click to Upload Logo</span>
+                    </div>
+                    <input type="file" id="familyLogoInput" accept="image/*" style="display: none;" onchange="handleLogoUpload(event, 'family')">
+                    
+                    <h1 class="home-name" id="familyName">Family Name</h1>
+                    
+                    <div class="generation-stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalMembers">0</div>
+                            <div class="stat-label">Total Members</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalGenerations">20</div>
+                            <div class="stat-label">Generations</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="activeContributions">0</div>
+                            <div class="stat-label">Active Contributions</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings -->
+            <section id="settings" class="section">
+                <!-- Settings Overview with Colorful Boxes -->
+                <div id="settingsOverview">
+                    <h2>System Settings</h2>
+                    
+                    <div class="settings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 20px 0;">
+                        
+                        <div class="setting-card" onclick="openSettingPage('general')" 
+                             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                    padding: 12px; border-radius: 8px; cursor: pointer; color: white;
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s; text-align: center;">
+                            <div style="font-size: 24px; margin-bottom: 5px;">⚙️</div>
+                            <h3 style="color: white; margin: 0 0 3px 0; font-size: 13px;">General</h3>
+                            <p style="font-size: 10px; opacity: 0.9; color: white; margin: 0;">Family & Coop</p>
+                        </div>
+                        
+                        <div class="setting-card" onclick="openSettingPage('genealogy')"
+                             style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                                    padding: 12px; border-radius: 8px; cursor: pointer; color: white;
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s; text-align: center;">
+                            <div style="font-size: 24px; margin-bottom: 5px;">🌳</div>
+                            <h3 style="color: white; margin: 0 0 3px 0; font-size: 13px;">Genealogy</h3>
+                            <p style="font-size: 10px; opacity: 0.9; color: white; margin: 0;">15 generations</p>
+                        </div>
+                        
+                        <div class="setting-card" onclick="openSettingPage('admin')"
+                             style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                                    padding: 12px; border-radius: 8px; cursor: pointer; color: white;
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s; text-align: center;">
+                            <div style="font-size: 24px; margin-bottom: 5px;">👥</div>
+                            <h3 style="color: white; margin: 0 0 3px 0; font-size: 13px;">Admin</h3>
+                            <p style="font-size: 10px; opacity: 0.9; color: white; margin: 0;">Positions</p>
+                        </div>
+                        
+                        <div class="setting-card" onclick="openSettingPage('financial')"
+                             style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+                                    padding: 12px; border-radius: 8px; cursor: pointer; color: white;
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s; text-align: center;">
+                            <div style="font-size: 24px; margin-bottom: 5px;">💰</div>
+                            <h3 style="color: white; margin: 0 0 3px 0; font-size: 13px;">Financial</h3>
+                            <p style="font-size: 10px; opacity: 0.9; color: white; margin: 0;">Savings & Loans</p>
+                        </div>
+                        
+                        <div class="setting-card" onclick="openSettingPage('familyLevy')"
+                             style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+                                    padding: 12px; border-radius: 8px; cursor: pointer; color: white;
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s; text-align: center;">
+                            <div style="font-size: 24px; margin-bottom: 5px;">🎁</div>
+                            <h3 style="color: white; margin: 0 0 3px 0; font-size: 13px;">Family Levy</h3>
+                            <p style="font-size: 10px; opacity: 0.9; color: white; margin: 0;">Contributions</p>
+                        </div>
+                        
+                    </div>
+                    
+                    <style>
+                    .setting-card:hover {
+                        transform: translateY(-3px);
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+                    }
+                    </style>
+                </div>
+
+                <!-- Individual Setting Pages (Initially Hidden) -->
+                <div id="settingPages" style="display: none;">
+                    <button onclick="backToSettingsOverview()" class="btn btn-secondary" style="margin-bottom: 20px;">
+                        ← Back to Settings
+                    </button>
+                    
+                    <div id="currentSettingPage"></div>
+                </div>
+
+                <!-- General Settings Tab (kept for compatibility) -->
+                <div id="generalTab" class="tab-content" style="display: none;">
+                    <div class="form-group">
+                        <label>Family Name</label>
+                        <input type="text" id="settingFamilyName">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Cooperative Name</label>
+                        <input type="text" id="settingCoopName">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Year of Operation</label>
+                        <select id="settingYear">
+                            <!-- Years 2025-2100 will be populated by JS -->
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="saveGeneralSettings()">Save General Settings</button>
+                </div>
+
+                <!-- Genealogical Ancestry Tab -->
+                <div id="genealogyTab" class="tab-content">
+                    <p style="margin-bottom: 20px; color: var(--neutral);">
+                        Configure your family hierarchy. Start with the Progenitor, then add subsequent generations. Each generation can select parents from the previous level.
+                    </p>
+                    
+                    <div id="genealogyLevels">
+                        <!-- Genealogy levels will be dynamically generated -->
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="saveGenealogy()">Save Genealogy</button>
+                </div>
+
+                <!-- Admin Configuration Tab -->
+                <div id="adminTab" class="tab-content">
+                    <div class="sub-tabs">
+                        <button class="sub-tab-btn active" onclick="showSubTab('positions')">Positions</button>
+                        <button class="sub-tab-btn" onclick="showSubTab('permissions')">Permissions</button>
+                        <button class="sub-tab-btn" onclick="showSubTab('committees')">Committees</button>
+                    </div>
+
+                    <!-- Positions Sub-tab -->
+                    <div id="positionsSubTab" class="sub-tab-content active">
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">Board of Trustees (Cooperative)</h3>
+                        <div id="boardPositions">
+                            <!-- Will be populated by JS -->
+                        </div>
+
+                        <h3 style="color: var(--primary); margin: 30px 0 15px;">Management Team (Cooperative)</h3>
+                        <div id="managementPositions">
+                            <!-- Will be populated by JS -->
+                        </div>
+
+                        <h3 style="color: var(--primary); margin: 30px 0 15px;">Family Elders (Family)</h3>
+                        <div id="elderPositions">
+                            <!-- Will be populated by JS -->
+                        </div>
+
+                        <button class="btn btn-primary" onclick="savePositions()">Save Positions</button>
+                    </div>
+
+                    <!-- Permissions Sub-tab -->
+                    <div id="permissionsSubTab" class="sub-tab-content">
+                        <p style="margin-bottom: 20px; color: var(--neutral);">
+                            Configure permissions for each administrator position. Check the permissions that each role should have.
+                        </p>
+                        
+                        <div class="permissions-grid" id="permissionsGrid">
+                            <!-- Will be populated by JS -->
+                        </div>
+
+                        <button class="btn btn-primary" onclick="savePermissions()">Save Permissions</button>
+                    </div>
+
+                    <!-- Committees Sub-tab -->
+                    <div id="committeesSubTab" class="sub-tab-content">
+                        <div id="committeesContainer">
+                            <!-- Will be populated by JS -->
+                        </div>
+
+                        <button class="btn btn-primary" onclick="saveCommittees()">Save Committees</button>
+                    </div>
+                </div>
+
+                <!-- Financial Configuration Tab -->
+                <div id="financialTab" class="tab-content">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">Loan Interest Rates</h3>
+                    
+                    <div class="form-group">
+                        <label>Cooperative Members (% per annum)</label>
+                        <input type="number" id="loanRateCoop" step="0.01" value="5.00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Family Members (% per annum)</label>
+                        <input type="number" id="loanRateFamily" step="0.01" value="8.00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Non-Members (% per annum)</label>
+                        <input type="number" id="loanRateNonMember" step="0.01" value="12.00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Max Loan (% of Savings)</label>
+                        <input type="number" id="maxLoanPercent" value="200">
+                    </div>
+
+                    <h3 style="color: var(--primary); margin: 30px 0 15px;">Investment Contribution Requirements</h3>
+                    
+                    <div class="form-group">
+                        <label>Approved Annual Minimum Investment</label>
+                        <input type="text" id="minInvestment" placeholder="₦50,000" oninput="formatCurrencyInput(this)">
+                    </div>
+
+                    <div class="calculator">
+                        <h4>Compound Interest Calculator</h4>
+                        <p style="margin-bottom: 15px; font-size: 14px; color: var(--neutral);">Formula: A = P(1 + r/n)^(nt)</p>
+                        
+                        <div class="calculator-grid">
+                            <div class="form-group">
+                                <label>Principal (P)</label>
+                                <input type="number" id="compoundP" placeholder="100000">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Annual Rate (r)</label>
+                                <input type="number" id="compoundR" step="0.01" placeholder="0.05">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Compounds/Year (n)</label>
+                                <input type="number" id="compoundN" placeholder="12">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Years (t)</label>
+                                <input type="number" id="compoundT" placeholder="5">
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="calculateCompoundInterest()">Calculate</button>
+                        
+                        <div id="compoundResult" class="result-box" style="display: none;">
+                            <h5>Results:</h5>
+                            <p>Final Amount: <span class="result-value" id="finalAmount"></span></p>
+                            <p>Total Interest: <span class="result-value" id="totalInterest"></span></p>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="saveFinancialSettings()">Save Financial Settings</button>
+                </div>
+
+                <!-- Family Levy Tab -->
+                <div id="familyLevyTab" class="tab-content">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">Create Family Levy Contribution</h3>
+                    
+                    <div class="form-group">
+                        <label>Purpose *</label>
+                        <select id="levyPurpose">
+                            <option value="">Select Purpose</option>
+                            <option value="Burial Levy">Burial Levy</option>
+                            <option value="Wedding Support">Wedding Support</option>
+                            <option value="Family Project">Family Project</option>
+                            <option value="Health Support">Health Support</option>
+                            <option value="Miscellaneous">Miscellaneous</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Beneficiary *</label>
+                        <input type="text" id="levyBeneficiary">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Budget Contribution *</label>
+                        <input type="text" id="levyBudget" placeholder="₦1,000,000" oninput="formatCurrencyInput(this)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Individual Levy *</label>
+                        <input type="text" id="levyIndividual" placeholder="₦5,000" oninput="formatCurrencyInput(this)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Opening Date *</label>
+                        <input type="date" id="levyOpening">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Closing Date *</label>
+                        <input type="date" id="levyClosing">
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="createFamilyLevy()">Create Contribution</button>
+
+                    <h3 style="color: var(--primary); margin: 40px 0 20px;">Active Contributions</h3>
+                    <div id="activeContributionsList">
+                        <p style="color: var(--neutral);">No active contributions yet.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Members Section -->
+            <section id="members" class="section">
+                <h2>Members Management</h2>
+                
+                <!-- STAGE 1: Colorful Members Tabs -->
+                <div style="display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap;">
+                    <button class="members-tab-btn active" id="pendingTab" onclick="showMembersTab('pending')" 
+                            style="flex: 1; min-width: 150px; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer;
+                                   background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white;
+                                   font-size: 13px; font-weight: 600; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        ⏳ Pending Approvals
+                    </button>
+                    <button class="members-tab-btn" id="approvedTab" onclick="showMembersTab('approved')"
+                            style="flex: 1; min-width: 150px; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer;
+                                   background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white;
+                                   font-size: 13px; font-weight: 600; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        ✅ Approved Members
+                    </button>
+                    <button class="members-tab-btn" id="rejectedTab" onclick="showMembersTab('rejected')"
+                            style="flex: 1; min-width: 150px; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer;
+                                   background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: white;
+                                   font-size: 13px; font-weight: 600; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        ❌ Rejected
+                    </button>
+                </div>
+
+                <style>
+                .members-tab-btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+                }
+                .members-tab-btn.active {
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+                    transform: scale(1.02);
+                }
+                </style>
+
+                <!-- Pending Approvals -->
+                <div id="pendingMembersTab" class="tab-content active">
+                    <div id="pendingMembersList" style="margin-top: 20px;">
+                        <p style="color: var(--neutral);">No pending registrations.</p>
+                    </div>
+                </div>
+
+                <!-- Approved Members -->
+                <div id="approvedMembersTab" class="tab-content">
+                    <!-- STAGE 2: Delete Duplicates Button -->
+                    <button onclick="findDuplicateMembers()" class="btn" 
+                            style="background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: white; margin: 15px 0; padding: 10px 20px; font-size: 13px;">
+                        🗑️ Find & Delete Duplicates
+                    </button>
+                    <div id="approvedMembersList" style="margin-top: 20px;">
+                        <p style="color: var(--neutral);">No approved members yet.</p>
+                    </div>
+                </div>
+
+                <!-- Rejected Members -->
+                <div id="rejectedMembersTab" class="tab-content">
+                    <div id="rejectedMembersList" style="margin-top: 20px;">
+                        <p style="color: var(--neutral);">No rejected registrations.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STAGE 2: Edit Member Modal -->
+            <div id="editMemberModal" class="modal">
+                <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+                    <h2>Edit Member - Complete Registration Form</h2>
+                    <form id="editMemberForm" onsubmit="updateMember(event)">
+                        <input type="hidden" id="editMemberId">
+                        
+                        <!-- Photo Upload -->
+                        <div class="form-group">
+                            <label>Photograph</label>
+                            <div style="display: flex; gap: 15px; align-items: start;">
+                                <div id="editPhotoPreview" style="width: 150px; height: 200px; border: 2px dashed var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f3f4f6;">
+                                    <span style="color: var(--neutral); font-size: 12px; text-align: center;">Current Photo<br>or<br>Upload New</span>
+                                </div>
+                                <div style="flex: 1;">
+                                    <input type="file" id="editPhotoInput" accept="image/*" onchange="handleEditPhotoUpload(event)" style="margin-bottom: 8px;">
+                                    <small style="color: var(--neutral); display: block;">Upload new photo or keep existing</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Full Names *</label>
+                            <input type="text" id="editFullName" required>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>Phone Number *</label>
+                                <input type="tel" id="editPhone" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Sex *</label>
+                                <select id="editSex" required>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Date of Birth (DD-MM-YYYY)</label>
+                            <input type="text" id="editDOB" placeholder="DD-MM-YYYY">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Place of Birth</label>
+                            <input type="text" id="editPOB">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>City of Residence</label>
+                            <input type="text" id="editCity">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>State of Residence</label>
+                            <input type="text" id="editState">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Country of Residence</label>
+                            <input type="text" id="editCountry">
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>Marital Status</label>
+                                <select id="editMaritalStatus">
+                                    <option value="">-- Select --</option>
+                                    <option value="Single">Single</option>
+                                    <option value="Married">Married</option>
+                                    <option value="Widowed">Widowed</option>
+                                    <option value="Divorced">Divorced</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Relationship Type</label>
+                                <select id="editRelationType">
+                                    <option value="">-- Select --</option>
+                                    <option value="Parent">Parent</option>
+                                    <option value="Child">Child</option>
+                                    <option value="Sibling">Sibling</option>
+                                    <option value="Spouse">Spouse</option>
+                                    <option value="Grandparent">Grandparent</option>
+                                    <option value="Grandchild">Grandchild</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Lineage Type</label>
+                            <select id="editLineageType">
+                                <option value="">-- Select --</option>
+                                <option value="Biological">🧬 Biological</option>
+                                <option value="Adoptive">❤️ Adoptive</option>
+                                <option value="Step">👨‍👩‍👧 Step-Parent</option>
+                                <option value="Foster">🏠 Foster</option>
+                                <option value="Inherited">👑 Inherited</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Children (if any - comma separated)</label>
+                            <textarea id="editChildren" rows="2" placeholder="Name1, Name2, Name3..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="editJoinCoop">
+                                Cooperative Member
+                            </label>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary">💾 Save All Changes</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeModal('editMemberModal')">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- STAGE 3: Worksheets Section -->
+            <section id="worksheets" class="section">
+                <h2>📊 Worksheets Management</h2>
+                <p style="color: var(--neutral); margin-bottom: 20px;">Track and manage financial records, contributions, and attendance</p>
+                
+                <!-- Worksheet Tabs -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 20px 0;">
+                    <button class="worksheet-tab active" id="savingsWorksheetTab" onclick="showWorksheet('savings')"
+                            style="padding: 15px; border: none; border-radius: 8px; cursor: pointer; background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; font-size: 14px; font-weight: 600; transition: all 0.3s;">
+                        💰 Savings Worksheet
+                    </button>
+                    <button class="worksheet-tab" id="loansWorksheetTab" onclick="showWorksheet('loans')"
+                            style="padding: 15px; border: none; border-radius: 8px; cursor: pointer; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white; font-size: 14px; font-weight: 600; transition: all 0.3s;">
+                        💳 Loans Worksheet
+                    </button>
+                    <button class="worksheet-tab" id="contributionsWorksheetTab" onclick="showWorksheet('contributions')"
+                            style="padding: 15px; border: none; border-radius: 8px; cursor: pointer; background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: white; font-size: 14px; font-weight: 600; transition: all 0.3s;">
+                        🎁 Contributions Worksheet
+                    </button>
+                    <button class="worksheet-tab" id="attendanceWorksheetTab" onclick="showWorksheet('attendance')"
+                            style="padding: 15px; border: none; border-radius: 8px; cursor: pointer; background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: white; font-size: 14px; font-weight: 600; transition: all 0.3s;">
+                        📋 Attendance Worksheet
+                    </button>
+                </div>
+
+                <!-- Savings Worksheet -->
+                <div id="savingsWorksheet" class="worksheet-content" style="display: block;">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">💰 Savings Tracking</h3>
+                    <button onclick="addSavingsEntry()" class="btn btn-primary" style="margin-bottom: 15px;">+ Add Savings Entry</button>
+                    
+                    <div style="overflow-x: auto;">
+                        <table class="worksheet-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                            <thead>
+                                <tr style="background: var(--primary); color: white;">
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Date</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Member</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">Amount (₦)</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Type</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Notes</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="savingsTableBody">
+                                <tr>
+                                    <td colspan="6" style="padding: 20px; text-align: center; color: var(--neutral);">
+                                        No savings entries yet. Click "+ Add Savings Entry" to start.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Loans Worksheet -->
+                <div id="loansWorksheet" class="worksheet-content" style="display: none;">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">💳 Loans Tracking</h3>
+                    <button onclick="addLoanEntry()" class="btn btn-primary" style="margin-bottom: 15px;">+ Add Loan Entry</button>
+                    
+                    <div style="overflow-x: auto;">
+                        <table class="worksheet-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                            <thead>
+                                <tr style="background: var(--primary); color: white;">
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Date</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Member</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">Amount (₦)</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Status</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">Balance (₦)</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loansTableBody">
+                                <tr>
+                                    <td colspan="6" style="padding: 20px; text-align: center; color: var(--neutral);">
+                                        No loan entries yet. Click "+ Add Loan Entry" to start.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Contributions Worksheet -->
+                <div id="contributionsWorksheet" class="worksheet-content" style="display: none;">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">🎁 Contributions Tracking</h3>
+                    <button onclick="addContributionEntry()" class="btn btn-primary" style="margin-bottom: 15px;">+ Add Contribution</button>
+                    
+                    <div style="overflow-x: auto;">
+                        <table class="worksheet-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                            <thead>
+                                <tr style="background: var(--primary); color: white;">
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Date</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Member</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">Amount (₦)</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Campaign</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Purpose</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contributionsTableBody">
+                                <tr>
+                                    <td colspan="6" style="padding: 20px; text-align: center; color: var(--neutral);">
+                                        No contributions yet. Click "+ Add Contribution" to start.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Attendance Worksheet -->
+                <div id="attendanceWorksheet" class="worksheet-content" style="display: none;">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">📋 Meeting Attendance</h3>
+                    <button onclick="addAttendanceSession()" class="btn btn-primary" style="margin-bottom: 15px;">+ New Meeting Session</button>
+                    
+                    <div style="overflow-x: auto;">
+                        <table class="worksheet-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                            <thead>
+                                <tr style="background: var(--primary); color: white;">
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Date</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Meeting Type</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Total Members</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Present</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Absent</th>
+                                    <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTableBody">
+                                <tr>
+                                    <td colspan="6" style="padding: 20px; text-align: center; color: var(--neutral);">
+                                        No attendance records yet. Click "+ New Meeting Session" to start.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Family Tree Section (Placeholder) -->
+            <section id="familyTree" class="section">
+                <h2>Interactive Family Tree</h2>
+                <p style="color: var(--neutral);">Family tree visualization coming soon...</p>
+            </section>
+
+            <!-- Finance Section (Placeholder) -->
+            <section id="finance" class="section">
+                <h2>Financial Management</h2>
+                <p style="color: var(--neutral);">Savings, loans, and investment modules coming soon...</p>
+            </section>
+
+            <!-- Reports Section (Placeholder) -->
+            <section id="reports" class="section">
+                <h2>Reports & Analytics</h2>
+                <p style="color: var(--neutral);">Financial reports and analytics coming soon...</p>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Configuration data structure
+        let config = {
+            familyName: '',
+            cooperativeName: '',
+            yearOfOperation: '2025',
+            familyLogo: '',
+            coopLogo: '',
+            superAdmin: null,
+            genealogy: {
+                progenitor: '',
+                higherAncestor: '',
+                ancestor: '',
+                family: '',
+                subfamily: '',
+                microfamily: '',
+                gen6: '', gen7: '', gen8: '', gen9: '', gen10: '',
+                gen11: '', gen12: '', gen13: '', gen14: '', gen15: '',
+                gen16: '', gen17: '', gen18: '', gen19: '', gen20: ''
+            },
+            positions: {},
+            permissions: {},
+            committees: {},
+            financialSettings: {},
+            familyContributions: [],
+            configured: false
+        };
+
+        // Genealogy levels configuration
+        const genealogyLevels = [
+            { id: 'progenitor', name: 'Progenitor', description: 'The founding ancestor' },
+            { id: 'superAncestor', name: 'Super Ancestor', description: 'Direct descendants of Progenitor' },
+            { id: 'ancestor', name: 'Ancestor', description: '3rd generation level' },
+            { id: 'family', name: 'Family', description: 'Family branches' },
+            { id: 'subfamily', name: 'Sub-Family', description: 'Family subdivisions' },
+            { id: 'microfamily', name: 'Micro-Family', description: 'Nuclear family units' },
+            { id: 'gen6', name: '6th Generation', description: '6th generation members' },
+            { id: 'gen7', name: '7th Generation', description: '7th generation members' },
+            { id: 'gen8', name: '8th Generation', description: '8th generation members' },
+            { id: 'gen9', name: '9th Generation', description: '9th generation members' },
+            { id: 'gen10', name: '10th Generation', description: '10th generation members' },
+            { id: 'gen11', name: '11th Generation', description: '11th generation members' },
+            { id: 'gen12', name: '12th Generation', description: '12th generation members' },
+            { id: 'gen13', name: '13th Generation', description: '13th generation members' },
+            { id: 'gen14', name: '14th Generation', description: '14th generation members' },
+            { id: 'gen15', name: '15th Generation', description: '15th generation members' },
+            { id: 'gen16', name: '16th Generation', description: '16th generation members' },
+            { id: 'gen17', name: '17th Generation', description: '17th generation members' },
+            { id: 'gen18', name: '18th Generation', description: '18th generation members' },
+            { id: 'gen19', name: '19th Generation', description: '19th generation members' },
+            { id: 'gen20', name: '20th Generation', description: '20th generation members' }
+        ];
+
+        // STAGE 3: Granular Permissions Structure
+        const granularPermissions = {
+            'Financial Management': [
+                { id: 'view_savings', name: 'View Savings Records' },
+                { id: 'process_deposits', name: 'Process Deposits' },
+                { id: 'process_withdrawals', name: 'Process Withdrawals' },
+                { id: 'view_loans', name: 'View Loan Applications' },
+                { id: 'approve_loans', name: '💰 Approve Loans' },
+                { id: 'reject_loans', name: 'Reject Loans' },
+                { id: 'process_repayments', name: 'Process Loan Repayments' },
+                { id: 'edit_interest_rates', name: 'Edit Interest Rates' }
+            ],
+            'Member Management': [
+                { id: 'view_members', name: 'View Member List' },
+                { id: 'approve_members', name: 'Approve New Members' },
+                { id: 'reject_members', name: 'Reject Applications' },
+                { id: 'edit_members', name: 'Edit Member Details' },
+                { id: 'delete_members', name: 'Delete Members' },
+                { id: 'view_genealogy', name: 'View Family Tree' },
+                { id: 'edit_genealogy', name: 'Edit Family Tree' }
+            ],
+            'Contributions & Levies': [
+                { id: 'create_campaigns', name: 'Create Campaigns' },
+                { id: 'edit_campaigns', name: 'Edit Campaigns' },
+                { id: 'record_contributions', name: 'Record Contributions' },
+                { id: 'view_contributions', name: 'View All Contributions' },
+                { id: 'generate_reports', name: 'Generate Contribution Reports' }
+            ],
+            'Worksheets': [
+                { id: 'view_worksheets', name: 'View Worksheets' },
+                { id: 'edit_savings_worksheet', name: 'Edit Savings Worksheet' },
+                { id: 'edit_loans_worksheet', name: 'Edit Loans Worksheet' },
+                { id: 'edit_contributions_worksheet', name: 'Edit Contributions Worksheet' },
+                { id: 'edit_attendance_worksheet', name: 'Edit Attendance Worksheet' }
+            ],
+            'Meetings & Events': [
+                { id: 'schedule_meetings', name: 'Schedule Meetings' },
+                { id: 'record_attendance', name: 'Record Attendance' },
+                { id: 'view_attendance', name: 'View Attendance Records' },
+                { id: 'create_events', name: 'Create Family Events' }
+            ],
+            'System Administration': [
+                { id: 'manage_positions', name: 'Manage Positions' },
+                { id: 'assign_permissions', name: 'Assign Permissions' },
+                { id: 'view_audit_log', name: 'View Audit Log' },
+                { id: 'system_settings', name: 'Change System Settings' },
+                { id: 'backup_data', name: 'Backup System Data' }
+            ]
+        };
+
+        // Admin positions
+        const boardPositions = [
+            'Chairman', 'Vice Chairman', 'Secretary', 'Treasurer',
+            'Financial Secretary', 'PRO', 'Legal Adviser'
+        ];
+
+        const managementPositions = [
+            'General Supervisor', 'General Secretary', 'Financial Secretary',
+            'Organising Secretary', 'Investment Secretary', 'Membership Relations Officer',
+            'Welfare Secretary', 'Treasurer', 'Auditor I'
+        ];
+
+        const elderPositions = [
+            'Chief Elder', 'Elder 1', 'Elder 2', 'Elder 3',
+            'Elder 4', 'Elder 5', 'Elder 6', 'Elder 7'
+        ];
+
+        const permissions = [
+            { id: 'user_management', name: 'User Management', description: 'Approve/reject members, edit profiles' },
+            { id: 'finance_contributions', name: 'Finance - Investment Contributions', description: 'Record payments, view reports, send reminders' },
+            { id: 'finance_loans', name: 'Finance - Loans', description: 'Process applications, record repayments' },
+            { id: 'finance_investments', name: 'Finance - Investments', description: 'Record assets, update portfolio' },
+            { id: 'communications', name: 'Communications', description: 'Send broadcast SMS alerts' },
+            { id: 'reporting', name: 'Reporting', description: 'Generate financial/audit statements' }
+        ];
+
+        const committees = [
+            { id: 'savings_loans', name: 'Savings and Loans Committee' },
+            { id: 'investment', name: 'Investment Committee' },
+            { id: 'verification', name: 'Family Verification Committee' },
+            { id: 'welfare', name: 'Welfare and Support Committee' }
+        ];
+
+        // Initialize app
+        function initApp() {
+            loadConfig();
+            
+            // LAUNCH: Create test accounts for all roles (for testing)
+            createTestAccounts();
+            
+            // Update landing page welcome message
+            updateLandingPageWelcome();
+            
+            // Hide/show setup button based on whether Super Admin exists
+            const setupButton = document.getElementById('setupButtonContainer');
+            if (config.configured && config.superAdmin) {
+                if (setupButton) setupButton.style.display = 'none';
+                
+                // Check if logged in
+                const loggedIn = sessionStorage.getItem('famcoopy_logged_in');
+                if (loggedIn === 'true') {
+                    showDashboard();
+                } else {
+                    showLoginModal();
+                }
+            } else {
+                // First time setup - show setup button
+                if (setupButton) setupButton.style.display = 'block';
+                document.getElementById('landingPage').style.display = 'block';
+            }
+
+            // Populate year dropdown (2025-2100)
+            const yearSelect = document.getElementById('settingYear');
+            for (let year = 2025; year <= 2100; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                if (year === 2025) {
+                    option.selected = true;
+                }
+                yearSelect.appendChild(option);
+            }
+
+            // Initialize genealogy UI
+            renderGenealogyLevels();
+            
+            // Initialize admin positions
+            renderAdminPositions();
+            
+            // Initialize permissions
+            renderPermissions();
+            
+            // Initialize committees
+            renderCommittees();
+        }
+
+        // Load configuration from localStorage
+        function loadConfig() {
+            const stored = localStorage.getItem('famcoopy_config');
+            if (stored) {
+                config = { ...config, ...JSON.parse(stored) };
+                updateUIFromConfig();
+            }
+        }
+
+        // Save configuration to localStorage
+        function saveConfig() {
+            localStorage.setItem('famcoopy_config', JSON.stringify(config));
+        }
+
+        // Update UI from loaded config
+        function updateUIFromConfig() {
+            // Update home pages
+            if (config.cooperativeName) {
+                document.getElementById('coopName').textContent = config.cooperativeName;
+            }
+            if (config.familyName) {
+                document.getElementById('familyName').textContent = config.familyName;
+            }
+            if (config.yearOfOperation) {
+                document.getElementById('coopYear').textContent = config.yearOfOperation;
+            }
+
+            // Update logos
+            if (config.coopLogo) {
+                const img = document.getElementById('coopLogoImg');
+                img.src = config.coopLogo;
+                img.style.display = 'block';
+                document.getElementById('coopLogoText').style.display = 'none';
+            }
+            if (config.familyLogo) {
+                const img = document.getElementById('familyLogoImg');
+                img.src = config.familyLogo;
+                img.style.display = 'block';
+                document.getElementById('familyLogoText').style.display = 'none';
+            }
+
+            // Update settings form
+            if (document.getElementById('settingFamilyName')) {
+                document.getElementById('settingFamilyName').value = config.familyName || '';
+                document.getElementById('settingCoopName').value = config.cooperativeName || '';
+                document.getElementById('settingYear').value = config.yearOfOperation || '2025';
+                
+                // Update financial settings
+                if (config.financialSettings) {
+                    document.getElementById('loanRateCoop').value = config.financialSettings.loanRateCoop || 5.00;
+                    document.getElementById('loanRateFamily').value = config.financialSettings.loanRateFamily || 8.00;
+                    document.getElementById('loanRateNonMember').value = config.financialSettings.loanRateNonMember || 12.00;
+                    document.getElementById('maxLoanPercent').value = config.financialSettings.maxLoanPercent || 200;
+                    document.getElementById('minInvestment').value = config.financialSettings.minInvestment || '';
+                }
+            }
+
+            // Update active contributions count
+            const activeCount = config.familyContributions.filter(c => c.status === 'active').length;
+            document.getElementById('activeContributions').textContent = activeCount;
+
+            // Render active contributions
+            renderActiveContributions();
+            
+            // SIMPLE FIX: Update dashboard stats
+            updateDashboardStats();
+        }
+
+        // SIMPLE FIX: Update dashboard statistics with correct counts
+        function updateDashboardStats() {
+            if (!config.members || !config.members.approved) return;
+            
+            const allMembers = config.members.approved;
+            const coopMembers = allMembers.filter(m => m.joinCoop === true);
+            
+            // Family Dashboard - ALL members
+            const totalMembersEl = document.getElementById('totalMembers');
+            if (totalMembersEl) {
+                totalMembersEl.textContent = allMembers.length;
+            }
+            
+            // Cooperative Dashboard
+            const coopTotalEl = document.getElementById('coopTotalMembers');
+            if (coopTotalEl) {
+                coopTotalEl.textContent = allMembers.length; // Total family members
+            }
+            
+            const coopMembersEl = document.getElementById('coopMembers');
+            if (coopMembersEl) {
+                coopMembersEl.textContent = coopMembers.length; // Only cooperative members
+            }
+        }
+
+        // Modal functions
+        function showRegisterModal() {
+            document.getElementById('registerModal').classList.add('active');
+        }
+
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function showSetupModal() {
+            document.getElementById('registerModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Password toggle
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                icon.textContent = '👁️';
+            }
+        }
+
+        // Register Super Admin
+        function registerSuperAdmin(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('regName').value;
+            const phone = document.getElementById('regPhone').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            config.superAdmin = {
+                name: name,
+                phone: phone,
+                password: password, // In production, this should be hashed
+                role: 'super_admin'
+            };
+
+            // Initialize members object if not exists
+            if (!config.members) {
+                config.members = {
+                    pending: [],
+                    approved: [],
+                    rejected: []
+                };
+            }
+
+            // Auto-approve Super Admin as first member
+            config.members.approved.push({
+                id: Date.now(),
+                fullName: name,
+                phone: phone,
+                password: password,
+                role: 'super_admin',
+                status: 'approved',
+                joinCoop: true,
+                approvedDate: new Date().toISOString(),
+                relatedPerson: 'N/A',
+                relationType: 'Founder',
+                photo: null
+            });
+
+            config.configured = true;
+            saveConfig();
+
+            closeModal('registerModal');
+            
+            // Update landing page with family name
+            updateLandingPageWelcome();
+            
+            alert('✅ Super Admin account created successfully! You can now login.');
+            showLoginModal();
+        }
+
+        // Update landing page with family name
+        function updateLandingPageWelcome() {
+            if (config.familyName && config.familyName.trim()) {
+                document.getElementById('landingPageTitle').textContent = `Welcome to the ${config.familyName} App`;
+                document.getElementById('landingPageSubtitle').textContent = 'Family Membership & Trust Cooperative Management System';
+            }
+        }
+
+        // LAUNCH: Create test accounts for all 4 roles
+        function createTestAccounts() {
+            if (!config.configured || !config.superAdmin) return;
+            
+            if (!config.members) {
+                config.members = { pending: [], approved: [], rejected: [] };
+            }
+            
+            // Check if test accounts already exist
+            const testAccountsExist = config.members.approved.some(m => 
+                m.phone === '08011111111' || 
+                m.phone === '08022222222' || 
+                m.phone === '08033333333'
+            );
+            
+            if (testAccountsExist) return; // Already created
+            
+            // Test Account 1: Administrator
+            config.members.approved.push({
+                id: Date.now() + 1,
+                fullName: 'Test Administrator',
+                phone: '08011111111',
+                password: 'admin123',
+                sex: 'Male',
+                dob: '01-01-1985',
+                role: 'admin',
+                status: 'approved',
+                joinCoop: true,
+                approvedDate: new Date().toISOString(),
+                relatedPerson: 'Super Admin',
+                relationType: 'Administrator',
+                lineageType: 'Biological',
+                city: 'Yenagoa',
+                state: 'Bayelsa',
+                country: 'Nigeria',
+                maritalStatus: 'Married',
+                children: '',
+                photo: null
+            });
+            
+            // Test Account 2: Cooperative Member
+            config.members.approved.push({
+                id: Date.now() + 2,
+                fullName: 'Test Cooperative Member',
+                phone: '08022222222',
+                password: 'coop123',
+                sex: 'Female',
+                dob: '15-05-1990',
+                role: 'member',
+                status: 'approved',
+                joinCoop: true, // Cooperative member
+                approvedDate: new Date().toISOString(),
+                relatedPerson: 'Super Admin',
+                relationType: 'Family Member',
+                lineageType: 'Biological',
+                city: 'Yenagoa',
+                state: 'Bayelsa',
+                country: 'Nigeria',
+                maritalStatus: 'Single',
+                children: '',
+                photo: null
+            });
+            
+            // Test Account 3: Family Only Member
+            config.members.approved.push({
+                id: Date.now() + 3,
+                fullName: 'Test Family Member',
+                phone: '08033333333',
+                password: 'family123',
+                sex: 'Male',
+                dob: '20-08-1995',
+                role: 'member',
+                status: 'approved',
+                joinCoop: false, // NOT cooperative member - family only
+                approvedDate: new Date().toISOString(),
+                relatedPerson: 'Super Admin',
+                relationType: 'Family Member',
+                lineageType: 'Biological',
+                city: 'Yenagoa',
+                state: 'Bayelsa',
+                country: 'Nigeria',
+                maritalStatus: 'Single',
+                children: '',
+                photo: null
+            });
+            
+            saveConfig();
+        }
+
+        // Login
+        function loginUser(event) {
+            event.preventDefault();
+
+            const phone = document.getElementById('loginPhone').value;
+            const password = document.getElementById('loginPassword').value;
+            const loginType = sessionStorage.getItem('login_type') || 'super_admin';
+
+            if (!config.superAdmin) {
+                alert('⚠️ No Super Admin account found!\n\nYou need to complete the initial setup first.\n\nClick OK to start the 3-step setup wizard.');
+                closeModal('loginModal');
+                showSetupModal();
+                return;
+            }
+
+            let user = null;
+
+            // Check if logging in as Super Admin
+            if (loginType === 'super_admin') {
+                if (phone === config.superAdmin.phone && password === config.superAdmin.password) {
+                    user = { ...config.superAdmin, loginType: 'super_admin' };
+                }
+            } else {
+                // Check in approved members
+                const member = config.members?.approved?.find(m => 
+                    m.phone === phone && m.password === password
+                );
+
+                if (member) {
+                    // Validate role matches login type
+                    // RULE: All Cooperative Members are also Family Members
+                    if (loginType === 'coop_member' && !member.joinCoop) {
+                        alert('You are not a cooperative member. Please login as Family Member.');
+                        return;
+                    }
+                    // Cooperative members CAN login as family members (removed block)
+                    
+                    user = { ...member, loginType: loginType };
+                }
+            }
+
+            if (!user) {
+                alert('Invalid credentials! Please check your phone number and password.');
+                return;
+            }
+
+            sessionStorage.setItem('famcoopy_logged_in', 'true');
+            sessionStorage.setItem('famcoopy_user', JSON.stringify(user));
+            closeModal('loginModal');
+            showDashboard();
+        }
+
+        // Logout
+        function logout() {
+            sessionStorage.removeItem('famcoopy_logged_in');
+            sessionStorage.removeItem('famcoopy_user');
+            sessionStorage.removeItem('login_type');
+            
+            // Clear form
+            if (document.getElementById('loginPhone')) {
+                document.getElementById('loginPhone').value = '';
+            }
+            if (document.getElementById('loginPassword')) {
+                document.getElementById('loginPassword').value = '';
+            }
+            if (document.getElementById('loginTypeSelect')) {
+                document.getElementById('loginTypeSelect').value = '';
+            }
+            
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('landingPage').style.display = 'block';
+            // DO NOT call showLoginModal() - let user choose when to login
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            
+            // Get current user
+            const userData = JSON.parse(sessionStorage.getItem('famcoopy_user') || '{}');
+            const loginType = userData.loginType || 'super_admin';
+            
+            document.getElementById('userNameDisplay').textContent = userData.name || userData.fullName || 'User';
+            
+            // Update home page headings based on login type
+            if (loginType === 'coop_member' || loginType === 'super_admin' || loginType === 'admin') {
+                // Show Cooperative Home
+                document.getElementById('cooperativeHome').classList.add('active');
+                document.getElementById('familyHome').classList.remove('active');
+            } else {
+                // Show Family Home for family members
+                document.getElementById('familyHome').classList.add('active');
+                document.getElementById('cooperativeHome').classList.remove('active');
+            }
+            
+            // Update UI from config
+            updateUIFromConfig();
+            updateDashboardContent(loginType);
+        }
+
+        // Update dashboard content based on user role
+        function updateDashboardContent(loginType) {
+            const sidebar = document.querySelector('.sidebar-nav');
+            
+            // Show/hide sections based on role
+            if (loginType === 'super_admin') {
+                // Super admin sees everything
+                sidebar.style.display = 'block';
+            } else if (loginType === 'admin') {
+                // Administrators see most things
+                sidebar.style.display = 'block';
+                // Hide super admin only sections
+            } else if (loginType === 'coop_member') {
+                // Cooperative members see cooperative features
+                sidebar.style.display = 'block';
+                // Hide admin sections
+            } else if (loginType === 'family_member') {
+                // Family members see limited features
+                sidebar.style.display = 'block';
+                // Hide cooperative and admin sections
+            }
+        }
+
+        // Toggle sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            
+            if (window.innerWidth <= 768) {
+                // Mobile: toggle mobile-open class
+                sidebar.classList.toggle('mobile-open');
+            } else {
+                // Desktop: toggle hidden class
+                sidebar.classList.toggle('hidden');
+                mainContent.classList.toggle('expanded');
+            }
+        }
+
+        // Show section
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.sidebar-nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Add active class to clicked button
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.remove('mobile-open');
+            }
+        }
+
+        // Show tab
+        // REVISED: Open setting page separately
+        function openSettingPage(pageName) {
+            // Hide overview
+            document.getElementById('settingsOverview').style.display = 'none';
+            
+            // Show pages container
+            document.getElementById('settingPages').style.display = 'block';
+            
+            // Get the content from the existing tab
+            const tabContent = document.getElementById(pageName + 'Tab');
+            const pageContainer = document.getElementById('currentSettingPage');
+            
+            if (tabContent) {
+                pageContainer.innerHTML = '<h2>' + getSettingTitle(pageName) + '</h2>' + tabContent.innerHTML;
+            }
+        }
+        
+        function backToSettingsOverview() {
+            document.getElementById('settingsOverview').style.display = 'block';
+            document.getElementById('settingPages').style.display = 'none';
+        }
+        
+        function getSettingTitle(pageName) {
+            const titles = {
+                'general': '⚙️ General Settings',
+                'genealogy': '🌳 Genealogical Ancestry',
+                'admin': '👥 Admin Configuration',
+                'financial': '💰 Financial Configuration',
+                'familyLevy': '🎁 Family Levy & Contributions'
+            };
+            return titles[pageName] || 'Settings';
+        }
+
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            const tabElement = document.getElementById(tabId + 'Tab');
+            if (tabElement) {
+                tabElement.classList.add('active');
+            }
+
+            // Add active class to clicked button if event exists
+            if (typeof event !== 'undefined' && event.target) {
+                event.target.classList.add('active');
+            }
+        }
+
+        // Show sub-tab
+        function showSubTab(subTabId) {
+            // Hide all sub-tabs
+            document.querySelectorAll('.sub-tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all sub-tab buttons
+            document.querySelectorAll('.sub-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected sub-tab
+            document.getElementById(subTabId + 'SubTab').classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Logo upload functions
+        function uploadLogo(type) {
+            if (type === 'coop') {
+                document.getElementById('coopLogoInput').click();
+            } else {
+                document.getElementById('familyLogoInput').click();
+            }
+        }
+
+        function handleLogoUpload(event, type) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                
+                if (type === 'coop') {
+                    config.coopLogo = dataUrl;
+                    const img = document.getElementById('coopLogoImg');
+                    img.src = dataUrl;
+                    img.style.display = 'block';
+                    document.getElementById('coopLogoText').style.display = 'none';
+                } else {
+                    config.familyLogo = dataUrl;
+                    const img = document.getElementById('familyLogoImg');
+                    img.src = dataUrl;
+                    img.style.display = 'block';
+                    document.getElementById('familyLogoText').style.display = 'none';
+                }
+                
+                saveConfig();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Save general settings
+        function saveGeneralSettings() {
+            config.familyName = document.getElementById('settingFamilyName').value;
+            config.cooperativeName = document.getElementById('settingCoopName').value;
+            config.yearOfOperation = document.getElementById('settingYear').value;
+
+            saveConfig();
+            updateUIFromConfig();
+
+            showAlert('success', 'General settings saved successfully!');
+        }
+
+        // Render genealogy levels
+        function renderGenealogyLevels() {
+            const container = document.getElementById('genealogyLevels');
+            container.innerHTML = '';
+
+            // Always show progenitor
+            const progenitorHtml = `
+                <div class="genealogy-level">
+                    <h4>${genealogyLevels[0].name}</h4>
+                    <p style="font-size: 14px; color: var(--neutral); margin-bottom: 10px;">${genealogyLevels[0].description}</p>
+                    <input type="text" id="genealogy_progenitor" value="${config.genealogy.progenitor || ''}" 
+                           placeholder="Enter progenitor name" class="form-control">
+                </div>
+            `;
+            container.innerHTML += progenitorHtml;
+
+            // Show higher ancestor if progenitor exists
+            if (config.genealogy.progenitor) {
+                renderGenealogyLevel(container, 1, 'progenitor');
+            }
+
+            // Render subsequent levels if previous level has data
+            for (let i = 2; i < genealogyLevels.length; i++) {
+                const prevLevelId = genealogyLevels[i - 1].id;
+                if (config.genealogy[prevLevelId]) {
+                    renderGenealogyLevel(container, i, prevLevelId);
+                }
+            }
+        }
+
+        function renderGenealogyLevel(container, index, parentLevelId) {
+            const level = genealogyLevels[index];
+            const parentNames = config.genealogy[parentLevelId] ? 
+                              config.genealogy[parentLevelId].split(',').map(n => n.trim()).filter(n => n) : [];
+
+            let html = `
+                <div class="genealogy-level" id="level_${level.id}">
+                    <h4>${level.name}</h4>
+                    <p style="font-size: 14px; color: var(--neutral); margin-bottom: 10px;">${level.description}</p>
+            `;
+
+            if (parentNames.length > 0) {
+                // Initialize genealogy data structure for this level if not exists
+                if (!config.genealogy[level.id + '_data']) {
+                    config.genealogy[level.id + '_data'] = {};
+                }
+
+                // Create input boxes for each parent
+                parentNames.forEach((parentName, idx) => {
+                    const savedChildren = config.genealogy[level.id + '_data'][parentName] || '';
+                    html += `
+                        <div class="form-group" style="background: #F3F4F6; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <label style="font-weight: 600; color: var(--primary);">Children of: ${parentName}</label>
+                            <textarea id="genealogy_${level.id}_${idx}" 
+                                    data-parent="${parentName}"
+                                    rows="3" 
+                                    placeholder="Enter children names separated by commas"
+                                    class="form-control genealogy-children-input"
+                                    style="margin-top: 8px;">${savedChildren}</textarea>
+                        </div>
+                    `;
+                });
+            }
+
+            html += `</div>`;
+            container.innerHTML += html;
+        }
+
+        // Save genealogy
+        function saveGenealogy() {
+            // Save progenitor
+            config.genealogy.progenitor = document.getElementById('genealogy_progenitor').value.trim();
+
+            // Save other levels - collect all children from all parents
+            genealogyLevels.forEach((level, index) => {
+                if (index > 0) {
+                    // Get all textareas for this level
+                    const textareas = document.querySelectorAll(`textarea[id^="genealogy_${level.id}_"]`);
+                    const dataObj = {};
+                    let allChildren = [];
+                    
+                    textareas.forEach(textarea => {
+                        const parentName = textarea.getAttribute('data-parent');
+                        const children = textarea.value.trim();
+                        
+                        if (parentName && children) {
+                            dataObj[parentName] = children;
+                            // Collect all children for this level
+                            const childrenArray = children.split(',').map(n => n.trim()).filter(n => n);
+                            allChildren = allChildren.concat(childrenArray);
+                        }
+                    });
+                    
+                    // Save the data structure
+                    config.genealogy[level.id + '_data'] = dataObj;
+                    // Save combined children list for next level to use
+                    config.genealogy[level.id] = allChildren.join(', ');
+                }
+            });
+
+            saveConfig();
+            renderGenealogyLevels(); // Re-render to show new levels
+            showAlert('success', 'Genealogy saved successfully! New generation levels are now available.');
+        }
+
+        // Render admin positions
+        function renderAdminPositions() {
+            renderPositionGroup('boardPositions', boardPositions);
+            renderPositionGroup('managementPositions', managementPositions);
+            renderPositionGroup('elderPositions', elderPositions);
+        }
+
+        function renderPositionGroup(containerId, positions) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            positions.forEach(position => {
+                const div = document.createElement('div');
+                div.className = 'form-group';
+                div.innerHTML = `
+                    <label>${position}</label>
+                    <select class="form-control" id="position_${position.replace(/\s+/g, '_')}">
+                        <option value="">-- Not Assigned --</option>
+                        <option value="Member 1">Member 1 (Sample)</option>
+                        <option value="Member 2">Member 2 (Sample)</option>
+                    </select>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Save positions
+        function savePositions() {
+            config.positions = {};
+            
+            [...boardPositions, ...managementPositions, ...elderPositions].forEach(position => {
+                const select = document.getElementById(`position_${position.replace(/\s+/g, '_')}`);
+                if (select && select.value) {
+                    config.positions[position] = select.value;
+                }
+            });
+
+            saveConfig();
+            showAlert('success', 'Positions saved successfully!');
+        }
+
+        // Render permissions
+        function renderPermissions() {
+            const container = document.getElementById('permissionsGrid');
+            container.innerHTML = '';
+
+            permissions.forEach(perm => {
+                const div = document.createElement('div');
+                div.className = 'permission-item';
+                div.innerHTML = `
+                    <input type="checkbox" id="perm_${perm.id}">
+                    <div class="permission-info">
+                        <h5>${perm.name}</h5>
+                        <p>${perm.description}</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Save permissions
+        function savePermissions() {
+            config.permissions = {};
+            
+            permissions.forEach(perm => {
+                const checkbox = document.getElementById(`perm_${perm.id}`);
+                if (checkbox) {
+                    config.permissions[perm.id] = checkbox.checked;
+                }
+            });
+
+            saveConfig();
+            showAlert('success', 'Permissions saved successfully!');
+        }
+
+        // Render committees
+        function renderCommittees() {
+            const container = document.getElementById('committeesContainer');
+            container.innerHTML = '';
+
+            committees.forEach(committee => {
+                const div = document.createElement('div');
+                div.style.marginBottom = '30px';
+                div.innerHTML = `
+                    <h4 style="color: var(--primary); margin-bottom: 15px;">${committee.name}</h4>
+                    <div class="form-group">
+                        <label>Member 1</label>
+                        <select class="form-control" id="committee_${committee.id}_1">
+                            <option value="">-- Select Member --</option>
+                            <option value="Member 1">Member 1 (Sample)</option>
+                            <option value="Member 2">Member 2 (Sample)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Member 2</label>
+                        <select class="form-control" id="committee_${committee.id}_2">
+                            <option value="">-- Select Member --</option>
+                            <option value="Member 1">Member 1 (Sample)</option>
+                            <option value="Member 2">Member 2 (Sample)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Member 3</label>
+                        <select class="form-control" id="committee_${committee.id}_3">
+                            <option value="">-- Select Member --</option>
+                            <option value="Member 1">Member 1 (Sample)</option>
+                            <option value="Member 2">Member 2 (Sample)</option>
+                        </select>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Save committees
+        function saveCommittees() {
+            config.committees = {};
+            
+            committees.forEach(committee => {
+                config.committees[committee.id] = {
+                    name: committee.name,
+                    members: [
+                        document.getElementById(`committee_${committee.id}_1`).value,
+                        document.getElementById(`committee_${committee.id}_2`).value,
+                        document.getElementById(`committee_${committee.id}_3`).value
+                    ].filter(m => m)
+                };
+            });
+
+            saveConfig();
+            showAlert('success', 'Committees saved successfully!');
+        }
+
+        // Save financial settings
+        function saveFinancialSettings() {
+            config.financialSettings = {
+                loanRateCoop: parseFloat(document.getElementById('loanRateCoop').value),
+                loanRateFamily: parseFloat(document.getElementById('loanRateFamily').value),
+                loanRateNonMember: parseFloat(document.getElementById('loanRateNonMember').value),
+                maxLoanPercent: parseInt(document.getElementById('maxLoanPercent').value),
+                minInvestment: document.getElementById('minInvestment').value
+            };
+
+            saveConfig();
+            showAlert('success', 'Financial settings saved successfully!');
+        }
+
+        // Calculate compound interest
+        function calculateCompoundInterest() {
+            const P = parseFloat(document.getElementById('compoundP').value);
+            const r = parseFloat(document.getElementById('compoundR').value);
+            const n = parseFloat(document.getElementById('compoundN').value);
+            const t = parseFloat(document.getElementById('compoundT').value);
+
+            if (!P || !r || !n || !t) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            // A = P(1 + r/n)^(nt)
+            const A = P * Math.pow(1 + r / n, n * t);
+            const interest = A - P;
+
+            document.getElementById('finalAmount').textContent = formatCurrency(A);
+            document.getElementById('totalInterest').textContent = formatCurrency(interest);
+            document.getElementById('compoundResult').style.display = 'block';
+        }
+
+        // Format currency input
+        function formatCurrencyInput(input) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            if (value) {
+                input.value = '₦' + parseInt(value).toLocaleString('en-US');
+            }
+        }
+
+        // Format currency for display
+        function formatCurrency(amount) {
+            return '₦' + Number(amount).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Create family levy contribution
+        function createFamilyLevy() {
+            const purpose = document.getElementById('levyPurpose').value;
+            const beneficiary = document.getElementById('levyBeneficiary').value;
+            const budget = document.getElementById('levyBudget').value;
+            const levy = document.getElementById('levyIndividual').value;
+            const opening = document.getElementById('levyOpening').value;
+            const closing = document.getElementById('levyClosing').value;
+
+            if (!purpose || !beneficiary || !budget || !levy || !opening || !closing) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            const contribution = {
+                id: Date.now(),
+                purpose,
+                beneficiary,
+                budget,
+                levy,
+                opening,
+                closing,
+                status: 'active'
+            };
+
+            config.familyContributions.push(contribution);
+            saveConfig();
+
+            // Clear form
+            document.getElementById('levyPurpose').value = '';
+            document.getElementById('levyBeneficiary').value = '';
+            document.getElementById('levyBudget').value = '';
+            document.getElementById('levyIndividual').value = '';
+            document.getElementById('levyOpening').value = '';
+            document.getElementById('levyClosing').value = '';
+
+            renderActiveContributions();
+            updateUIFromConfig();
+            showAlert('success', 'Family levy contribution created successfully!');
+        }
+
+        // Render active contributions
+        function renderActiveContributions() {
+            const container = document.getElementById('activeContributionsList');
+            const activeContribs = config.familyContributions.filter(c => c.status === 'active');
+
+            if (activeContribs.length === 0) {
+                container.innerHTML = '<p style="color: var(--neutral);">No active contributions yet.</p>';
+                return;
+            }
+
+            container.innerHTML = activeContribs.map(contrib => `
+                <div class="contribution-item">
+                    <div class="contribution-header">
+                        <div>
+                            <div class="contribution-title">${contrib.purpose}</div>
+                            <p style="font-size: 14px; color: var(--neutral); margin-top: 5px;">
+                                Beneficiary: ${contrib.beneficiary}
+                            </p>
+                        </div>
+                        <button class="btn-archive" onclick="archiveContribution(${contrib.id})">
+                            Archive
+                        </button>
+                    </div>
+                    <div class="contribution-detail">
+                        <div class="detail-item">
+                            <span class="detail-label">Budget:</span> ${contrib.budget}
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Individual Levy:</span> ${contrib.levy}
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Opening:</span> ${new Date(contrib.opening).toLocaleDateString()}
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Closing:</span> ${new Date(contrib.closing).toLocaleDateString()}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Archive contribution
+        function archiveContribution(id) {
+            if (!confirm('Are you sure you want to archive this contribution? This action will prevent new contributions.')) {
+                return;
+            }
+
+            const contribution = config.familyContributions.find(c => c.id === id);
+            if (contribution) {
+                contribution.status = 'archived';
+                saveConfig();
+                renderActiveContributions();
+                updateUIFromConfig();
+                showAlert('success', 'Contribution archived successfully!');
+            }
+        }
+
+        // Show alert
+        function showAlert(type, message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+
+            const container = document.querySelector('.section.active');
+            if (container) {
+                container.insertBefore(alertDiv, container.firstChild);
+
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 3000);
+            }
+        }
+
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        // Handle login type selection from dropdown
+        // STAGE 1: New function for colorful login buttons
+        function selectLoginRole(roleType) {
+            const modal = document.getElementById('loginModal');
+            const title = modal.querySelector('h2');
+            const submitButton = modal.querySelector('button[type="submit"]');
+            
+            const titles = {
+                'super_admin': 'Super Admin Login',
+                'admin': 'Administrator Login',
+                'coop_member': 'Cooperative Member Login',
+                'family_member': 'Family Member Login'
+            };
+            
+            const buttonTexts = {
+                'super_admin': 'Login as Super Admin',
+                'admin': 'Login as Administrator',
+                'coop_member': 'Login as Cooperative Member',
+                'family_member': 'Login as Family Member'
+            };
+            
+            // Update modal
+            title.textContent = titles[roleType] || 'Login';
+            if (submitButton) submitButton.textContent = buttonTexts[roleType] || 'Login';
+            
+            // Clear previous credentials
+            if (document.getElementById('loginPhone')) document.getElementById('loginPhone').value = '';
+            if (document.getElementById('loginPassword')) document.getElementById('loginPassword').value = '';
+            
+            // Store login type
+            sessionStorage.setItem('login_type', roleType);
+            
+            // Show modal
+            modal.classList.add('active');
+        }
+
+        function handleLoginSelection() {
+            const selectElement = document.getElementById('loginTypeSelect');
+            if (!selectElement) return; // Element may not exist with new button system
+            
+            const selectedType = selectElement.value;
+            if (!selectedType) return;
+
+            selectLoginRole(selectedType);
+            selectElement.value = '';
+        }
+
+        // Show public registration modal
+        function showPublicRegistration() {
+            populateRelatedPersonDropdown();
+            document.getElementById('publicRegistrationModal').classList.add('active');
+        }
+
+        // Get lineage icon
+        function getLineageIcon(lineageType) {
+            const icons = {
+                'Biological': '🧬',
+                'Adoptive': '❤️',
+                'Step': '👨‍👩‍👧',
+                'Foster': '🏠',
+                'Inherited': '👑'
+            };
+            return icons[lineageType] || '';
+        }
+
+        // Update lineage type visibility based on relationship selection
+        function updateLineageOptions() {
+            const relationType = document.getElementById('pubRelationType').value;
+            const lineageGroup = document.getElementById('lineageTypeGroup');
+            const lineageSelect = document.getElementById('pubLineageType');
+            
+            if (relationType === 'Child of Parent') {
+                lineageGroup.style.display = 'block';
+                lineageSelect.required = true;
+            } else {
+                lineageGroup.style.display = 'none';
+                lineageSelect.required = false;
+                lineageSelect.value = ''; // Clear selection
+            }
+        }
+
+        // Preview uploaded photo
+        function previewPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('photoPreview');
+                preview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;">`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Zoom photo on double-tap
+        function zoomPhoto() {
+            const preview = document.getElementById('photoPreview');
+            const img = preview.querySelector('img');
+            if (!img) {
+                alert('Please upload a photo first');
+                return;
+            }
+
+            // Create zoom modal
+            const zoomModal = document.createElement('div');
+            zoomModal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.9); z-index: 10000;
+                display: flex; align-items: center; justify-content: center;
+            `;
+            zoomModal.innerHTML = `
+                <img src="${img.src}" style="max-width: 90%; max-height: 90%; object-fit: contain;">
+                <div style="position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer;"
+                     onclick="this.parentElement.remove()">×</div>
+            `;
+            zoomModal.onclick = function(e) {
+                if (e.target === zoomModal || e.target.textContent === '×') {
+                    zoomModal.remove();
+                }
+            };
+            document.body.appendChild(zoomModal);
+        }
+
+        // Populate related person dropdown from approved members
+        function populateRelatedPersonDropdown() {
+            const select = document.getElementById('pubRelatedPerson');
+            select.innerHTML = '<option value="">-- Select --</option>';
+            select.innerHTML += '<option value="PENDING">⏳ Pending (Cannot identify lineage yet)</option>';
+
+            // Add progenitor if configured
+            if (config.genealogy.progenitor) {
+                select.innerHTML += `<option value="${config.genealogy.progenitor}">${config.genealogy.progenitor}</option>`;
+            }
+
+            // Add all approved members
+            if (config.members && config.members.approved) {
+                config.members.approved.forEach(member => {
+                    select.innerHTML += `<option value="${member.fullName}">${member.fullName}</option>`;
+                });
+            }
+
+            // Add all genealogy members from all levels
+            genealogyLevels.forEach(level => {
+                if (config.genealogy[level.id + '_data']) {
+                    Object.keys(config.genealogy[level.id + '_data']).forEach(parent => {
+                        const children = config.genealogy[level.id + '_data'][parent];
+                        if (children) {
+                            children.split(',').forEach(child => {
+                                const childName = child.trim();
+                                if (childName) {
+                                    select.innerHTML += `<option value="${childName}">${childName}</option>`;
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        // Submit public registration
+        function submitPublicRegistration(event) {
+            event.preventDefault();
+
+            const relatedPerson = document.getElementById('pubRelatedPerson').value;
+            const photoFile = document.getElementById('pubPhoto').files[0];
+            const dob = document.getElementById('pubDOB').value;
+
+            // Determine if this is Gen 6-20 (living members)
+            // If they selected a parent (not PENDING), they're current generation
+            const isLivingGeneration = relatedPerson && relatedPerson !== 'PENDING';
+
+            // Validate photo for Gen 6-20
+            if (isLivingGeneration && !photoFile) {
+                alert('⚠️ Photo is required for current generation members (Gen 6-20).\n\nNote: Photo is optional only for ancestors (Gen 1-5) configured by Super Admin in Settings.');
+                return;
+            }
+
+            // Validate DOB for Gen 6-20
+            if (isLivingGeneration && !dob) {
+                alert('⚠️ Date of Birth is required for current generation members (Gen 6-20).\n\nNote: DOB is optional only for ancestors (Gen 1-5) configured by Super Admin in Settings.');
+                return;
+            }
+
+            // Process photo if provided
+            if (photoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    saveMemberData(e.target.result);
+                };
+                reader.readAsDataURL(photoFile);
+            } else {
+                // No photo - allowed for ancestors only
+                saveMemberData(null);
+            }
+        }
+
+        function saveMemberData(photoData) {
+            const memberData = {
+                id: Date.now(),
+                fullName: document.getElementById('pubFullName').value,
+                phone: document.getElementById('pubPhone').value,
+                password: document.getElementById('pubPassword').value,
+                photo: photoData,
+                sex: document.getElementById('pubSex').value,
+                dob: document.getElementById('pubDOB').value,
+                pob: document.getElementById('pubPOB').value,
+                maritalStatus: document.getElementById('pubMarital').value,
+                children: document.getElementById('pubChildren').value,
+                relatedPerson: document.getElementById('pubRelatedPerson').value,
+                relationType: document.getElementById('pubRelationType').value,
+                lineageType: document.getElementById('pubLineageType').value || null,
+                city: document.getElementById('pubCity').value,
+                state: document.getElementById('pubState').value,
+                country: document.getElementById('pubCountry').value,
+                joinCoop: document.getElementById('pubJoinCoop').checked,
+                status: 'pending',
+                submittedDate: new Date().toISOString()
+            };
+
+            // Initialize members object if not exists
+            if (!config.members) {
+                config.members = {
+                    pending: [],
+                    approved: [],
+                    rejected: []
+                };
+            }
+
+            config.members.pending.push(memberData);
+            saveConfig();
+
+            closeModal('publicRegistrationModal');
+            alert('Registration submitted successfully! You will receive an SMS notification once your registration is reviewed.');
+
+            // Reset form
+            document.getElementById('publicRegForm').reset();
+            document.getElementById('photoPreview').innerHTML = '<span style="color: var(--neutral); font-size: 9px; text-align: center; padding: 3px; line-height: 1.2;">Tap<br>upload</span>';
+        }
+
+        // Show members tab
+        function showMembersTab(tabName) {
+            document.querySelectorAll('#members .tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('#members .tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabName + 'MembersTab').classList.add('active');
+            event.target.classList.add('active');
+
+            renderMembersList();
+        }
+
+        // Render members list
+        function renderMembersList() {
+            if (!config.members) {
+                config.members = { pending: [], approved: [], rejected: [] };
+            }
+
+            // Render pending
+            renderMembersCategory('pending', config.members.pending);
+            // Render approved
+            renderMembersCategory('approved', config.members.approved);
+            // Render rejected
+            renderMembersCategory('rejected', config.members.rejected);
+        }
+
+        function renderMembersCategory(category, members) {
+            const container = document.getElementById(category + 'MembersList');
+            
+            if (!members || members.length === 0) {
+                container.innerHTML = `<p style="color: var(--neutral);">No ${category} ${category === 'pending' ? 'registrations' : 'members'}.</p>`;
+                return;
+            }
+
+            // LAUNCH: Spreadsheet view for APPROVED members (scalable for large membership)
+            if (category === 'approved') {
+                container.innerHTML = `
+                    <div style="overflow-x: auto; margin-top: 15px;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 13px; background: white;">
+                            <thead>
+                                <tr style="background: var(--primary); color: white;">
+                                    <th style="padding: 12px 8px; border: 1px solid #ddd; text-align: left; min-width: 50px;">#</th>
+                                    <th style="padding: 12px 8px; border: 1px solid #ddd; text-align: left; min-width: 80px;">Photo</th>
+                                    <th style="padding: 12px 8px; border: 1px solid #ddd; text-align: left; min-width: 180px;">Full Name</th>
+                                    <th style="padding: 12px 8px; border: 1px solid #ddd; text-align: left; min-width: 120px;">Phone</th>
+                                    <th style="padding: 12px 8px; border: 1px solid #ddd; text-align: center; min-width: 60px;">Sex</th>
+                                    <th style="padding: 12px 8px; border: 1px solid #ddd; text-align: left; min-width: 100px;">DOB</th>
+                                    <th style="padding: 12px 8px; border: 1px solid #ddd; text-align: left; min-width: 150px;">Location</th>
+                                    <th style="padding: 12px 8px; border: 1px solid #ddd; text-align: left; min-width: 120px;">Lineage</th>
+                                    <th style="padding: 12px 8px; border: 1px solid #ddd; text-align: center; min-width: 80px;">Coop</th>
+                                    <th style="padding: 12px 8px; border: 1px solid #ddd; text-align: center; min-width: 300px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${members.map((member, index) => `
+                                    <tr style="border-bottom: 1px solid #e5e7eb; ${index % 2 === 0 ? 'background: #f9fafb;' : ''}">
+                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${index + 1}</td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;">
+                                            ${member.photo ? 
+                                                `<img src="${member.photo}" style="width: 60px; height: 80px; object-fit: cover; border-radius: 4px;">` :
+                                                `<div style="width: 60px; height: 80px; background: #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #6b7280;">No Photo</div>`
+                                            }
+                                        </td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;"><strong>${member.fullName}</strong></td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;">${member.phone}</td>
+                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${member.sex}</td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;">${member.dob || 'N/A'}</td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;">${[member.city, member.state, member.country].filter(Boolean).join(', ') || 'N/A'}</td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;">${member.lineageType ? getLineageIcon(member.lineageType) + ' ' + member.lineageType : 'N/A'}</td>
+                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${member.joinCoop ? '✅' : '❌'}</td>
+                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
+                                            <div style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;">
+                                                <button onclick="viewMemberDetails(${member.id})" 
+                                                        style="padding: 6px 12px; font-size: 11px; background: #3B82F6; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                                    👁️ View
+                                                </button>
+                                                <button onclick="editMember(${member.id})" 
+                                                        style="padding: 6px 12px; font-size: 11px; background: #10B981; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                                    ✏️ Edit
+                                                </button>
+                                                <button onclick="deleteMember(${member.id})" 
+                                                        style="padding: 6px 12px; font-size: 11px; background: #EF4444; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                                    🗑️ Remove
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                        <p style="margin-top: 10px; font-size: 12px; color: var(--neutral);">
+                            📊 Total Approved Members: <strong>${members.length}</strong>
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Card view for PENDING and REJECTED (smaller numbers, needs review)
+            container.innerHTML = members.map(member => `
+                <div class="contribution-item" style="margin-bottom: 15px; padding: 15px;">
+                    <div style="display: grid; grid-template-columns: 100px 1fr auto; gap: 15px; align-items: start;">
+                        <div>
+                            ${member.photo ? 
+                                `<img src="${member.photo}" style="width: 100px; height: 130px; object-fit: cover; border-radius: 8px;">` :
+                                `<div style="width: 100px; height: 130px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280;">No Photo</div>`
+                            }
+                        </div>
+                        <div>
+                            <h3 style="color: var(--primary); margin: 0 0 8px 0; font-size: 16px;">${member.fullName}</h3>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 13px;">
+                                <div><strong>Phone:</strong> ${member.phone}</div>
+                                <div><strong>Sex:</strong> ${member.sex}</div>
+                                <div><strong>DOB:</strong> ${member.dob || 'N/A'}</div>
+                                <div><strong>Marital:</strong> ${member.maritalStatus || 'N/A'}</div>
+                                ${member.lineageType ? `<div><strong>Lineage:</strong> ${getLineageIcon(member.lineageType)} ${member.lineageType}</div>` : ''}
+                                <div><strong>Coop Member:</strong> ${member.joinCoop ? '✅ Yes' : '❌ No'}</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 8px; min-width: 120px;">
+                            ${category === 'pending' ? `
+                                <button class="btn btn-primary" onclick="approveMember(${member.id})" style="padding: 8px 16px; font-size: 13px;">✅ Approve</button>
+                                <button class="btn" onclick="rejectMember(${member.id})" style="padding: 8px 16px; font-size: 13px; background: var(--error); color: white;">❌ Reject</button>
+                            ` : ''}
+                            ${category === 'rejected' ? `
+                                <button class="btn" onclick="deleteRejectedMember(${member.id})" style="padding: 8px 16px; font-size: 13px; background: var(--error); color: white;">🗑️ Delete</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Approve member
+        function approveMember(memberId) {
+            if (!confirm('Approve this member registration?')) return;
+
+            const memberIndex = config.members.pending.findIndex(m => m.id === memberId);
+            if (memberIndex !== -1) {
+                const member = config.members.pending.splice(memberIndex, 1)[0];
+                member.status = 'approved';
+                member.approvedDate = new Date().toISOString();
+                config.members.approved.push(member);
+                
+                // Update total members count
+                document.getElementById('totalMembers').textContent = config.members.approved.length;
+                
+                saveConfig();
+                renderMembersList();
+                showAlert('success', `${member.fullName} has been approved! SMS notification will be sent.`);
+            }
+        }
+
+        // Reject member
+        function rejectMember(memberId) {
+            const reason = prompt('Enter rejection reason (optional):');
+            
+            const memberIndex = config.members.pending.findIndex(m => m.id === memberId);
+            if (memberIndex !== -1) {
+                const member = config.members.pending.splice(memberIndex, 1)[0];
+                member.status = 'rejected';
+                member.rejectedDate = new Date().toISOString();
+                member.rejectionReason = reason || 'Not specified';
+                config.members.rejected.push(member);
+                
+                saveConfig();
+                renderMembersList();
+                showAlert('success', `Registration rejected. SMS notification will be sent.`);
+            }
+        }
+
+        // STAGE 2: Edit member - ENHANCED with complete form
+        let editPhotoData = null;
+        
+        function editMember(memberId) {
+            const member = config.members.approved.find(m => m.id === memberId);
+            if (!member) {
+                alert('Member not found!');
+                return;
+            }
+            
+            // Reset photo data
+            editPhotoData = member.photo || null;
+            
+            // Populate all form fields
+            document.getElementById('editMemberId').value = member.id;
+            document.getElementById('editFullName').value = member.fullName;
+            document.getElementById('editPhone').value = member.phone;
+            document.getElementById('editSex').value = member.sex;
+            document.getElementById('editDOB').value = member.dob || '';
+            document.getElementById('editPOB').value = member.placeOfBirth || '';
+            document.getElementById('editCity').value = member.city || '';
+            document.getElementById('editState').value = member.state || '';
+            document.getElementById('editCountry').value = member.country || '';
+            document.getElementById('editMaritalStatus').value = member.maritalStatus || '';
+            document.getElementById('editRelationType').value = member.relationType || '';
+            document.getElementById('editLineageType').value = member.lineageType || '';
+            document.getElementById('editChildren').value = member.children || '';
+            document.getElementById('editJoinCoop').checked = member.joinCoop || false;
+            
+            // Show photo if exists
+            const photoPreview = document.getElementById('editPhotoPreview');
+            if (member.photo) {
+                photoPreview.innerHTML = `<img src="${member.photo}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            } else {
+                photoPreview.innerHTML = '<span style="color: var(--neutral); font-size: 12px; text-align: center;">Current Photo<br>or<br>Upload New</span>';
+            }
+            
+            // Show modal
+            document.getElementById('editMemberModal').classList.add('active');
+        }
+
+        function handleEditPhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    editPhotoData = e.target.result;
+                    document.getElementById('editPhotoPreview').innerHTML = 
+                        `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // STAGE 2: Update member - ENHANCED with all fields
+        function updateMember(event) {
+            event.preventDefault();
+            
+            const memberId = parseInt(document.getElementById('editMemberId').value);
+            const memberIndex = config.members.approved.findIndex(m => m.id === memberId);
+            
+            if (memberIndex === -1) {
+                alert('Member not found!');
+                return;
+            }
+            
+            // Update member with all fields
+            config.members.approved[memberIndex] = {
+                ...config.members.approved[memberIndex],
+                photo: editPhotoData,
+                fullName: document.getElementById('editFullName').value,
+                phone: document.getElementById('editPhone').value,
+                sex: document.getElementById('editSex').value,
+                dob: document.getElementById('editDOB').value,
+                placeOfBirth: document.getElementById('editPOB').value,
+                city: document.getElementById('editCity').value,
+                state: document.getElementById('editState').value,
+                country: document.getElementById('editCountry').value,
+                maritalStatus: document.getElementById('editMaritalStatus').value,
+                relationType: document.getElementById('editRelationType').value,
+                lineageType: document.getElementById('editLineageType').value,
+                children: document.getElementById('editChildren').value,
+                joinCoop: document.getElementById('editJoinCoop').checked,
+                lastModified: new Date().toISOString()
+            };
+            
+            saveConfig();
+            closeModal('editMemberModal');
+            renderMembersList();
+            showAlert('success', 'Member updated successfully with all details!');
+        }
+
+        // STAGE 2: Delete member
+        function deleteMember(memberId) {
+            const member = config.members.approved.find(m => m.id === memberId);
+            if (!member) return;
+            
+            if (!confirm(`⚠️ DELETE MEMBER?\n\nAre you sure you want to delete "${member.fullName}"?\n\nThis action CANNOT be undone!`)) {
+                return;
+            }
+            
+            const memberIndex = config.members.approved.findIndex(m => m.id === memberId);
+            if (memberIndex !== -1) {
+                config.members.approved.splice(memberIndex, 1);
+                saveConfig();
+                renderMembersList();
+                showAlert('success', 'Member deleted successfully.');
+            }
+        }
+
+        // FINAL: Delete rejected member
+        function deleteRejectedMember(memberId) {
+            const member = config.members.rejected.find(m => m.id === memberId);
+            if (!member) return;
+            
+            if (!confirm(`⚠️ DELETE REJECTED RECORD?\n\nAre you sure you want to delete "${member.fullName}" from rejected list?\n\nThis action CANNOT be undone!`)) {
+                return;
+            }
+            
+            const memberIndex = config.members.rejected.findIndex(m => m.id === memberId);
+            if (memberIndex !== -1) {
+                config.members.rejected.splice(memberIndex, 1);
+                saveConfig();
+                renderMembersList();
+                showAlert('success', 'Rejected member deleted successfully.');
+            }
+        }
+
+        // STAGE 2: Find duplicate members
+        function findDuplicateMembers() {
+            const members = config.members.approved;
+            if (!members || members.length === 0) {
+                alert('No members to check for duplicates.');
+                return;
+            }
+            
+            const phoneMap = {};
+            const duplicates = [];
+            
+            members.forEach(m => {
+                if (phoneMap[m.phone]) {
+                    duplicates.push({
+                        original: phoneMap[m.phone],
+                        duplicate: m
+                    });
+                } else {
+                    phoneMap[m.phone] = m;
+                }
+            });
+            
+            if (duplicates.length === 0) {
+                alert('✅ No duplicate members found!\n\nAll phone numbers are unique.');
+                return;
+            }
+            
+            let message = `🗑️ Found ${duplicates.length} duplicate(s):\n\n`;
+            duplicates.forEach((dup, index) => {
+                message += `${index + 1}. ${dup.duplicate.fullName} (Phone: ${dup.duplicate.phone})\n`;
+                message += `   Duplicate of: ${dup.original.fullName}\n\n`;
+            });
+            message += 'Delete all duplicates?';
+            
+            if (confirm(message)) {
+                duplicates.forEach(dup => {
+                    const index = config.members.approved.findIndex(m => m.id === dup.duplicate.id);
+                    if (index !== -1) {
+                        config.members.approved.splice(index, 1);
+                    }
+                });
+                
+                saveConfig();
+                renderMembersList();
+                showAlert('success', `Deleted ${duplicates.length} duplicate member(s).`);
+            }
+        }
+
+        // View member details
+        function viewMemberDetails(memberId) {
+            const member = config.members.approved.find(m => m.id === memberId);
+            if (member) {
+                // Build detailed info
+                let details = `MEMBER DETAILS\n\n`;
+                details += `Name: ${member.fullName}\n`;
+                details += `Phone: ${member.phone}\n`;
+                details += `Sex: ${member.sex}\n`;
+                details += `DOB: ${member.dob || 'N/A'}\n`;
+                details += `Marital Status: ${member.maritalStatus || 'N/A'}\n`;
+                details += `Related To: ${member.relatedPerson || 'N/A'}\n`;
+                details += `Relationship: ${member.relationType || 'N/A'}\n`;
+                if (member.lineageType) details += `Lineage: ${member.lineageType}\n`;
+                details += `Location: ${[member.city, member.state, member.country].filter(Boolean).join(', ') || 'N/A'}\n`;
+                details += `Cooperative Member: ${member.joinCoop ? 'Yes' : 'No'}\n`;
+                if (member.children) details += `Children: ${member.children}\n`;
+                details += `\nApproved: ${new Date(member.approvedDate).toLocaleString()}`;
+                
+                alert(details);
+            }
+        }
+
+        // STAGE 3: Worksheet Functions
+        function showWorksheet(type) {
+            // Hide all worksheets
+            document.querySelectorAll('.worksheet-content').forEach(ws => {
+                ws.style.display = 'none';
+            });
+            // Remove active from all tabs
+            document.querySelectorAll('.worksheet-tab').forEach(tab => {
+                tab.style.opacity = '0.7';
+            });
+            
+            // Show selected worksheet
+            document.getElementById(type + 'Worksheet').style.display = 'block';
+            // Activate selected tab
+            document.getElementById(type + 'WorksheetTab').style.opacity = '1';
+        }
+
+        function addSavingsEntry() {
+            const memberName = prompt('Member Name:');
+            const amount = prompt('Amount (₦):');
+            const type = prompt('Type (Monthly/Special/Voluntary):');
+            const notes = prompt('Notes (optional):');
+            
+            if (memberName && amount) {
+                if (!config.worksheets) config.worksheets = { savings: [], loans: [], contributions: [], attendance: [] };
+                
+                config.worksheets.savings.push({
+                    id: Date.now(),
+                    date: new Date().toISOString().split('T')[0],
+                    member: memberName,
+                    amount: parseFloat(amount),
+                    type: type || 'Monthly',
+                    notes: notes || ''
+                });
+                
+                saveConfig();
+                renderSavingsWorksheet();
+                showAlert('success', 'Savings entry added!');
+            }
+        }
+
+        function addLoanEntry() {
+            const memberName = prompt('Member Name:');
+            const amount = prompt('Loan Amount (₦):');
+            
+            if (memberName && amount) {
+                if (!config.worksheets) config.worksheets = { savings: [], loans: [], contributions: [], attendance: [] };
+                
+                config.worksheets.loans.push({
+                    id: Date.now(),
+                    date: new Date().toISOString().split('T')[0],
+                    member: memberName,
+                    amount: parseFloat(amount),
+                    balance: parseFloat(amount),
+                    status: 'Active'
+                });
+                
+                saveConfig();
+                renderLoansWorksheet();
+                showAlert('success', 'Loan entry added!');
+            }
+        }
+
+        function addContributionEntry() {
+            const memberName = prompt('Member Name:');
+            const amount = prompt('Amount (₦):');
+            const campaign = prompt('Campaign Name:');
+            const purpose = prompt('Purpose:');
+            
+            if (memberName && amount && campaign) {
+                if (!config.worksheets) config.worksheets = { savings: [], loans: [], contributions: [], attendance: [] };
+                
+                config.worksheets.contributions.push({
+                    id: Date.now(),
+                    date: new Date().toISOString().split('T')[0],
+                    member: memberName,
+                    amount: parseFloat(amount),
+                    campaign: campaign,
+                    purpose: purpose || ''
+                });
+                
+                saveConfig();
+                renderContributionsWorksheet();
+                showAlert('success', 'Contribution recorded!');
+            }
+        }
+
+        function addAttendanceSession() {
+            const meetingType = prompt('Meeting Type (Regular/Special/Emergency):');
+            const totalMembers = config.members.approved ? config.members.approved.length : 0;
+            const present = prompt(`Members Present (out of ${totalMembers}):`);
+            
+            if (meetingType && present) {
+                if (!config.worksheets) config.worksheets = { savings: [], loans: [], contributions: [], attendance: [] };
+                
+                const presentCount = parseInt(present);
+                config.worksheets.attendance.push({
+                    id: Date.now(),
+                    date: new Date().toISOString().split('T')[0],
+                    meetingType: meetingType,
+                    totalMembers: totalMembers,
+                    present: presentCount,
+                    absent: totalMembers - presentCount
+                });
+                
+                saveConfig();
+                renderAttendanceWorksheet();
+                showAlert('success', 'Attendance recorded!');
+            }
+        }
+
+        function renderSavingsWorksheet() {
+            const tbody = document.getElementById('savingsTableBody');
+            if (!config.worksheets || !config.worksheets.savings || config.worksheets.savings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="padding: 20px; text-align: center; color: var(--neutral);">No savings entries yet.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = config.worksheets.savings.map(entry => `
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${entry.date}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${entry.member}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">₦${entry.amount.toLocaleString()}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${entry.type}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${entry.notes}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
+                        <button onclick="deleteWorksheetEntry('savings', ${entry.id})" style="padding: 4px 8px; background: var(--error); color: white; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderLoansWorksheet() {
+            const tbody = document.getElementById('loansTableBody');
+            if (!config.worksheets || !config.worksheets.loans || config.worksheets.loans.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="padding: 20px; text-align: center; color: var(--neutral);">No loan entries yet.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = config.worksheets.loans.map(entry => `
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${entry.date}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${entry.member}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">₦${entry.amount.toLocaleString()}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${entry.status}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">₦${entry.balance.toLocaleString()}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
+                        <button onclick="deleteWorksheetEntry('loans', ${entry.id})" style="padding: 4px 8px; background: var(--error); color: white; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderContributionsWorksheet() {
+            const tbody = document.getElementById('contributionsTableBody');
+            if (!config.worksheets || !config.worksheets.contributions || config.worksheets.contributions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="padding: 20px; text-align: center; color: var(--neutral);">No contributions yet.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = config.worksheets.contributions.map(entry => `
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${entry.date}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${entry.member}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">₦${entry.amount.toLocaleString()}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${entry.campaign}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${entry.purpose}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
+                        <button onclick="deleteWorksheetEntry('contributions', ${entry.id})" style="padding: 4px 8px; background: var(--error); color: white; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAttendanceWorksheet() {
+            const tbody = document.getElementById('attendanceTableBody');
+            if (!config.worksheets || !config.worksheets.attendance || config.worksheets.attendance.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="padding: 20px; text-align: center; color: var(--neutral);">No attendance records yet.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = config.worksheets.attendance.map(entry => `
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${entry.date}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${entry.meetingType}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${entry.totalMembers}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${entry.present}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${entry.absent}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
+                        <button onclick="deleteWorksheetEntry('attendance', ${entry.id})" style="padding: 4px 8px; background: var(--error); color: white; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteWorksheetEntry(type, id) {
+            if (!confirm('Delete this entry?')) return;
+            
+            const index = config.worksheets[type].findIndex(e => e.id === id);
+            if (index !== -1) {
+                config.worksheets[type].splice(index, 1);
+                saveConfig();
+                
+                // Re-render
+                if (type === 'savings') renderSavingsWorksheet();
+                else if (type === 'loans') renderLoansWorksheet();
+                else if (type === 'contributions') renderContributionsWorksheet();
+                else if (type === 'attendance') renderAttendanceWorksheet();
+                
+                showAlert('success', 'Entry deleted!');
+            }
+        }
+    </script>
+</body>
+</html>
