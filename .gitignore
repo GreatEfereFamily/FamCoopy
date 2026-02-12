@@ -1,0 +1,35 @@
+# FamCoopy .gitignore
+
+# User data and configurations
+*.local
+*.backup
+config.json
+
+# Browser storage files
+localStorage/
+sessionStorage/
+
+# Testing and development
+test/
+*.test.html
+debug/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+temp/
